@@ -11,8 +11,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primaryCol: "#1AB1E5",
+        secondaryCol: "#046E89",
+        tertiaryCol: "#DCDCDC",
+        "status-pemanggilan": "#F59E0B",
+        "status-pemeriksaan": "#3BC354",
+        "status-pembayaran": "#FF0004",
       },
     },
   },

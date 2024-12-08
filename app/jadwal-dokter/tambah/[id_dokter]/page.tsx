@@ -125,6 +125,22 @@ function TambahJadwalDokterPage({ params }: { params: { id_dokter: string } }) {
     }
   };
 
+  const handleDelete = async (hari: string, id_jadwal: number) => {
+    const { data } = await axios.delete(
+      `http://localhost:5000/api/jadwal-praktik/${id_jadwal}`,
+    );
+
+    if (jadwal) {
+      const newJadwalHari = [...(jadwal[hari] || [])].filter(
+        (j) => j.id_jadwal !== id_jadwal,
+      );
+
+      const newJadwal = { ...jadwal };
+      newJadwal[hari] = newJadwalHari;
+      setJadwal(newJadwal);
+    }
+  };
+
   return (
     <>
       <main className="">
@@ -146,12 +162,25 @@ function TambahJadwalDokterPage({ params }: { params: { id_dokter: string } }) {
                   <p className="text-lg font-semibold">{h}</p>
                   {jadwal[h]?.map((j) => {
                     return (
-                      <div key={j.id_jadwal} className="bg-slate-100 p-2">
-                        <p>{j.no_ruang}</p>
-                        <p>
-                          {formatTime(j.start_time)} - {formatTime(j.end_time)}
-                        </p>
-                        <p>Kuota : {j.kuota}</p>
+                      <div
+                        key={j.id_jadwal}
+                        className="flex justify-between gap-2 bg-slate-100 p-2"
+                      >
+                        <div>
+                          <p>{j.no_ruang}</p>
+                          <p>
+                            {formatTime(j.start_time)} -{" "}
+                            {formatTime(j.end_time)}
+                          </p>
+                          <p>Kuota : {j.kuota}</p>
+                        </div>
+
+                        <button
+                          className="h-4 w-4 bg-red-500"
+                          onClick={() => {
+                            handleDelete(h, j.id_jadwal);
+                          }}
+                        ></button>
                       </div>
                     );
                   })}

@@ -3,6 +3,7 @@ import { Noto_Sans } from "next/font/google";
 import "./globals.css";
 import { NextUIProvider } from "@nextui-org/react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import "react-toastify/dist/ReactToastify.css";
 
 const notoSans = Noto_Sans({ subsets: ["latin"] });
 

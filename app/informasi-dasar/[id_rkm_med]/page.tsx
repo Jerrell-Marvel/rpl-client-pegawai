@@ -69,6 +69,20 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
     }
   };
 
+  const handleChange = (
+    field: keyof InformasiDasar,
+    value: number | string,
+  ) => {
+    if (informasiDasar) {
+      const newInformasiDasar = {
+        ...informasiDasar,
+        [field]: value,
+      };
+
+      setInformasiDasar(newInformasiDasar);
+    }
+  };
+
   return (
     <main>
       {informasiDasar ? (
@@ -81,12 +95,10 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
                 placeholder={informasiDasarField.displayText}
                 value={String(informasiDasar[informasiDasarField.field] || "")}
                 onChange={(e) => {
-                  const newInformasiDasar = {
-                    ...informasiDasar,
-                    [informasiDasarField.field]: e.target.value,
-                  };
-
-                  setInformasiDasar(newInformasiDasar);
+                  handleChange(
+                    informasiDasarField.field,
+                    Number(e.target.value),
+                  );
                 }}
                 type="number"
                 min={0}
@@ -105,12 +117,7 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
             }
             variant="bordered"
             onChange={(e) => {
-              const newInformasiDasar = {
-                ...informasiDasar,
-                golongan_darah: e.target.value,
-              };
-
-              setInformasiDasar(newInformasiDasar);
+              handleChange("golongan_darah", e.target.value);
             }}
           >
             {golonganDarahOption.map((h) => (

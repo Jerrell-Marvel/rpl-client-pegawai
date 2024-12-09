@@ -1,5 +1,6 @@
 "use client";
 
+import PendaftaranCard from "@/components/PendaftaranCard";
 import { Pendaftaran } from "@/types/pendaftaran";
 import { Button } from "@nextui-org/react";
 import axios from "axios";
@@ -36,20 +37,7 @@ function DaftarUlangPage() {
       {pendaftaran.map((p) => {
         return (
           <>
-            <div className="rounded-md bg-white p-4">
-              <p className="text-xl font-bold">{p.nama_pasien}</p>
-              <p className="text-slate-400">
-                Id pendaftaran : {p.id_pendaftaran}
-              </p>
-              <p className="text-slate-400">
-                No rekam medis : {p.no_rkm_medis}
-              </p>
-
-              <p className="font-bold">Dokter : {p.nama_dokter}</p>
-              <p>Ruangan : {p.no_ruang}</p>
-              <p>
-                {p.start_time} - {p.end_time}
-              </p>
+            <PendaftaranCard pendaftaran={p}>
               <div className="flex justify-end">
                 <Button
                   className="bg-primary text-white"
@@ -60,7 +48,7 @@ function DaftarUlangPage() {
                   Daftarkan
                 </Button>
               </div>
-            </div>
+            </PendaftaranCard>
           </>
         );
       })}

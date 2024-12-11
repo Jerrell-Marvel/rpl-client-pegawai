@@ -5,11 +5,13 @@ import PendaftaranCard from "@/components/PendaftaranCard";
 import { Pemanggilan, Pendaftaran } from "@/types/pendaftaran";
 import { Button } from "@nextui-org/react";
 import axios from "axios";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 function PemanggilanPage() {
   const [pendaftaran, setPendaftaran] = useState<Pemanggilan[]>([]);
 
+  console.log(pendaftaran);
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get<Pemanggilan[]>(
@@ -34,7 +36,11 @@ function PemanggilanPage() {
           <>
             <PemanggilanCard pemanggilan={p}>
               <div className="flex justify-end">
-                <Button className="bg-primary text-white">
+                <Button
+                  as={Link}
+                  className="bg-primary text-white"
+                  href={`/informasi-dasar/${p.id_rkm_med}`}
+                >
                   Informasi Dasar
                 </Button>
               </div>

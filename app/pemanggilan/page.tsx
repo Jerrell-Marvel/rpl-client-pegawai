@@ -1,18 +1,24 @@
 "use client";
 
+import PemanggilanCard from "@/components/PemanggilanCard";
 import PendaftaranCard from "@/components/PendaftaranCard";
-import { Pendaftaran } from "@/types/pendaftaran";
+import { Pemanggilan, Pendaftaran } from "@/types/pendaftaran";
 import { Button } from "@nextui-org/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
 function PemanggilanPage() {
-  const [pendaftaran, setPendaftaran] = useState<Pendaftaran[]>([]);
+  const [pendaftaran, setPendaftaran] = useState<Pemanggilan[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get(
-        "http://localhost:5000/api/pendaftaran/pemanggilan",
+      const { data } = await axios.get<Pemanggilan[]>(
+        "http://localhost:5000/api/pendaftaran",
+        {
+          params: {
+            status: "pemanggilan",
+          },
+        },
       );
 
       setPendaftaran(data);
@@ -26,7 +32,13 @@ function PemanggilanPage() {
       {pendaftaran.map((p) => {
         return (
           <>
-            <PendaftaranCard pendaftaran={p}></PendaftaranCard>
+            <PemanggilanCard pemanggilan={p}>
+              <div className="flex justify-end">
+                <Button className="bg-primary text-white">
+                  Informasi Dasar
+                </Button>
+              </div>
+            </PemanggilanCard>
           </>
         );
       })}

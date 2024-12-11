@@ -29,6 +29,20 @@ function PemanggilanPage() {
     fetchData();
   }, []);
 
+  const handleMasukRuanganClick = async (id_pendaftaran: number) => {
+    const { data } = await axios.post(
+      `http://localhost:5000/api/pendaftaran/status/${id_pendaftaran}`,
+      {
+        status: "pemeriksaan",
+      },
+    );
+
+    const newPendaftaran = pendaftaran.filter(
+      (p) => p.id_pendaftaran !== id_pendaftaran,
+    );
+    setPendaftaran(newPendaftaran);
+  };
+
   return (
     <main className="flex flex-col gap-8 bg-slate-100 p-12">
       {pendaftaran.map((p) => {
@@ -40,8 +54,9 @@ function PemanggilanPage() {
                   //   as={Link}
                   className="bg-primary text-white"
                   //   href={`/informasi-dasar/${p.id_rkm_med}`}
+                  onClick={() => handleMasukRuanganClick(p.id_pendaftaran)}
                 >
-                  Masuk Dokter
+                  Sudah Masuk Ruangan Dokter
                 </Button>
               </div>
             </PemanggilanCard>

@@ -44,6 +44,7 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
     null,
   );
 
+  // diawal get dlu informasi dasarnya
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get<InformasiDasar>(
@@ -56,6 +57,7 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
     fetchData();
   }, []);
 
+  // save update ke backend
   const handleSave = async () => {
     if (
       informasiDasar &&
@@ -120,8 +122,8 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
               handleChange("golongan_darah", e.target.value);
             }}
           >
-            {golonganDarahOption.map((h) => (
-              <SelectItem key={h}>{h}</SelectItem>
+            {golonganDarahOption.map((golDarah) => (
+              <SelectItem key={golDarah}>{golDarah}</SelectItem>
             ))}
           </Select>
         </>

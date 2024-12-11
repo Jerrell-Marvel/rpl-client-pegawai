@@ -13,7 +13,12 @@ function PemanggilanPage() {
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get<Pemanggilan[]>(
-        "http://localhost:5000/api/pendaftaran/pemanggilan",
+        "http://localhost:5000/api/pendaftaran",
+        {
+          params: {
+            status: "pemanggilan",
+          },
+        },
       );
 
       setPendaftaran(data);

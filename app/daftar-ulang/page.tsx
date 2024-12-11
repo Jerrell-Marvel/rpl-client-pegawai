@@ -12,7 +12,12 @@ function DaftarUlangPage() {
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get(
-        "http://localhost:5000/api/pendaftaran/online",
+        "http://localhost:5000/api/pendaftaran",
+        {
+          params: {
+            status: "pendaftaran",
+          },
+        },
       );
 
       setPendaftaran(data);

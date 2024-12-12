@@ -34,7 +34,15 @@ function PemanggilanPage() {
       {pendaftaran.map((p) => {
         return (
           <>
-            <PemanggilanCard pemanggilan={p}></PemanggilanCard>
+            <PemanggilanCard pemanggilan={p}>
+              <Button
+                as={Link}
+                className="bg-primary text-white"
+                href={`/diagnosis/${p.id_rkm_med}`}
+              >
+                Diagnosis
+              </Button>
+            </PemanggilanCard>
           </>
         );
       })}

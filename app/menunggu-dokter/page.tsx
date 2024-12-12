@@ -18,7 +18,7 @@ function PemanggilanPage() {
         "http://localhost:5000/api/pendaftaran",
         {
           params: {
-            status: "pemanggilan",
+            status: "dokter",
           },
         },
       );
@@ -29,11 +29,11 @@ function PemanggilanPage() {
     fetchData();
   }, []);
 
-  const handleSelesaiClick = async (id_pendaftaran: number) => {
+  const handleMasukRuanganClick = async (id_pendaftaran: number) => {
     const { data } = await axios.post(
       `http://localhost:5000/api/pendaftaran/status/${id_pendaftaran}`,
       {
-        status: "dokter",
+        status: "pemeriksaan",
       },
     );
 
@@ -50,15 +50,13 @@ function PemanggilanPage() {
           <>
             <PemanggilanCard pemanggilan={p}>
               <div className="flex justify-end">
-                <Button onClick={() => handleSelesaiClick(p.id_pendaftaran)}>
-                  Selesai
-                </Button>
                 <Button
-                  as={Link}
+                  //   as={Link}
                   className="bg-primary text-white"
-                  href={`/informasi-dasar/${p.id_rkm_med}`}
+                  //   href={`/informasi-dasar/${p.id_rkm_med}`}
+                  onClick={() => handleMasukRuanganClick(p.id_pendaftaran)}
                 >
-                  Informasi Dasar
+                  Sudah Masuk Ruangan Dokter
                 </Button>
               </div>
             </PemanggilanCard>

@@ -18,7 +18,7 @@ function PemanggilanPage() {
         "http://localhost:5000/api/pendaftaran",
         {
           params: {
-            status: "pemanggilan",
+            status: "pemeriksaan",
           },
         },
       );
@@ -29,38 +29,19 @@ function PemanggilanPage() {
     fetchData();
   }, []);
 
-  const handleSelesaiClick = async (id_pendaftaran: number) => {
-    const { data } = await axios.post(
-      `http://localhost:5000/api/pendaftaran/status/${id_pendaftaran}`,
-      {
-        status: "dokter",
-      },
-    );
-
-    const newPendaftaran = pendaftaran.filter(
-      (p) => p.id_pendaftaran !== id_pendaftaran,
-    );
-    setPendaftaran(newPendaftaran);
-  };
-
   return (
     <main className="flex flex-col gap-8 bg-slate-100 p-12">
       {pendaftaran.map((p) => {
         return (
           <>
             <PemanggilanCard pemanggilan={p}>
-              <div className="flex justify-end">
-                <Button onClick={() => handleSelesaiClick(p.id_pendaftaran)}>
-                  Selesai
-                </Button>
-                <Button
-                  as={Link}
-                  className="bg-primary text-white"
-                  href={`/informasi-dasar/${p.id_rkm_med}`}
-                >
-                  Informasi Dasar
-                </Button>
-              </div>
+              <Button
+                as={Link}
+                className="bg-primary text-white"
+                href={`/diagnosis/${p.id_rkm_med}`}
+              >
+                Diagnosis
+              </Button>
             </PemanggilanCard>
           </>
         );

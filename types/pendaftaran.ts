@@ -10,4 +10,5 @@ export type Pendaftaran = {
 
 export type Pemanggilan = {
   antrian: number;
+  id_rkm_med: number;
 } & Pendaftaran;

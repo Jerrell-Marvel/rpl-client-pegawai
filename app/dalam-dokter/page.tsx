@@ -30,7 +30,7 @@ function PemanggilanPage() {
   }, []);
 
   return (
-    <main className="flex flex-col gap-8 bg-slate-100 p-12">
+    <main className="flex flex-col gap-8 p-12">
       {pendaftaran.map((p) => {
         return (
           <>

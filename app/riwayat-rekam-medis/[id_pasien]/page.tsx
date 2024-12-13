@@ -1,7 +1,7 @@
 "use client";
 
+import { AxiosInstance } from "@/utils/axiosInstance";
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 type RiwayatRekammedisPageProps = {
   params: {
@@ -37,7 +37,7 @@ function RiwayatRekamMedisPage({ params }: RiwayatRekammedisPageProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get(
+      const { data } = await AxiosInstance.get(
         `http://localhost:5000/api/rekam-medis/${params.id_pasien}`,
       );
 

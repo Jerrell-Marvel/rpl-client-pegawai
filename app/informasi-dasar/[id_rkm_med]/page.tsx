@@ -26,6 +26,14 @@ type InformasiDasar = {
   denyut_nadi: number | null;
 };
 
+type DokumenRekamMedis = {
+  id_dkm: number;
+  uploaded_at: string;
+  path_file: string;
+  id_rkm_med: number;
+  is_active: boolean;
+};
+
 const informasiDasarFields: {
   displayText: string;
   field: keyof InformasiDasar;
@@ -47,11 +55,14 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
   // diawal get dlu informasi dasarnya
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await AxiosInstance.get<InformasiDasar>(
+      const { data } = await AxiosInstance.get<{
+        informasi_dasar: InformasiDasar;
+        dokumen_rekam_medis: DokumenRekamMedis;
+      }>(
         `http://localhost:5000/api/rekam-medis/informasi-dasar/${params.id_rkm_med}`,
       );
 
-      setInformasiDasar(data);
+      setInformasiDasar(data.informasi_dasar);
     };
 
     fetchData();

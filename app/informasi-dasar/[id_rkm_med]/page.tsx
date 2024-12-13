@@ -123,21 +123,30 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
   };
 
   const downloadFile = async (filename: string) => {
-    try {
-      const response = await AxiosInstance.get(
-        `http://localhost:5000/uploads/${filename}`,
-      );
+    const response = await AxiosInstance.get(
+      `http://localhost:5000/uploads/${filename}`,
+      {
+        responseType: "blob",
+      },
+    );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.log("error cuy");
-    }
+    const link = document.createElement("a");
+    const url = window.URL.createObjectURL(response.data);
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleDelete = async (id_dkm: number) => {
+    const { data } = await AxiosInstance.delete(
+      `http://localhost:5000/api/rekam-medis/dokumen/${id_dkm}`,
+    );
+
+    const newDokumenRekamMedis = dokumenRekamMedis!.filter(
+      (dkm) => dkm.id_dkm !== id_dkm,
+    );
+    setDokumenRekamMedis(newDokumenRekamMedis);
   };
 
   return (
@@ -182,8 +191,6 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
             ))}
           </Select>
 
-          <Input type="file" multiple onChange={handleFileChange} />
-
           <ul>
             {dokumenRekamMedis.map((dkm) => {
               return (
@@ -191,11 +198,18 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
                   <Button onClick={() => downloadFile(dkm.path_file)}>
                     {dkm.path_file}
                   </Button>
-                  <Button className="bg-red-600 text-white">Delete</Button>
+                  <Button
+                    className="bg-red-600 text-white"
+                    onClick={() => handleDelete(dkm.id_dkm)}
+                  >
+                    Delete
+                  </Button>
                 </li>
               );
             })}
           </ul>
+
+          <Input type="file" multiple onChange={handleFileChange} />
         </>
       ) : null}
       {JSON.stringify(informasiDasar)};

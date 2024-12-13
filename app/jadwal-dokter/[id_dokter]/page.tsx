@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Dokter, Jadwal } from "@/types/dokter";
 import {
   Button,
@@ -20,6 +19,7 @@ import { div } from "framer-motion/client";
 import { formatTime } from "@/utils/time";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AxiosInstance } from "@/utils/axiosInstance";
 
 type JadwalPraktikResponse = Dokter & { jadwal_praktik: Jadwal[] };
 
@@ -68,11 +68,11 @@ function TambahJadwalDokterPage({ params }: { params: { id_dokter: string } }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get<JadwalPraktikResponse>(
+      const { data } = await AxiosInstance.get<JadwalPraktikResponse>(
         `http://localhost:5000/api/jadwal-praktik/${params.id_dokter}`,
       );
 
-      const { data: dataRuang } = await axios.get<Ruang[]>(
+      const { data: dataRuang } = await AxiosInstance.get<Ruang[]>(
         "http://localhost:5000/api/ruang",
       );
       setRuang(dataRuang);
@@ -88,7 +88,7 @@ function TambahJadwalDokterPage({ params }: { params: { id_dokter: string } }) {
 
   const handleSubmit = async () => {
     if (selectedHari && startTime && endTime && selectedRuang) {
-      const { data } = await axios.post(
+      const { data } = await AxiosInstance.post(
         "http://localhost:5000/api/jadwal-praktik",
         {
           hari: selectedHari,
@@ -137,7 +137,7 @@ function TambahJadwalDokterPage({ params }: { params: { id_dokter: string } }) {
   };
 
   const handleDelete = async (hari: string, id_jadwal: number) => {
-    const { data } = await axios.delete(
+    const { data } = await AxiosInstance.delete(
       `http://localhost:5000/api/jadwal-praktik/${id_jadwal}`,
     );
 

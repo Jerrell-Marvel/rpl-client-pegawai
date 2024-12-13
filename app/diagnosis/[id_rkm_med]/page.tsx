@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { AxiosInstance } from "@/utils/axiosInstance";
 
 type DiagnosisPageProps = {
   params: {
@@ -39,7 +39,7 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get<Diagnosis>(
+      const { data } = await AxiosInstance.get<Diagnosis>(
         `http://localhost:5000/api/rekam-medis/diagnosis/${params.id_rkm_med}`,
       );
 
@@ -52,7 +52,7 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
   // save update ke backend
   const handleSave = async () => {
     // klo udh diisi semua
-    const { data } = await axios.post(
+    const { data } = await AxiosInstance.post(
       `http://localhost:5000/api/rekam-medis/diagnosis/${params.id_rkm_med}`,
       diagnosis,
     );

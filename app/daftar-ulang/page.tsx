@@ -2,8 +2,8 @@
 
 import PendaftaranCard from "@/components/PendaftaranCard";
 import { Pendaftaran } from "@/types/pendaftaran";
+import { AxiosInstance } from "@/utils/axiosInstance";
 import { Button } from "@nextui-org/react";
-import axios from "axios";
 import { useEffect, useState } from "react";
 
 function DaftarUlangPage() {
@@ -11,7 +11,7 @@ function DaftarUlangPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get(
+      const { data } = await AxiosInstance.get(
         "http://localhost:5000/api/pendaftaran",
         {
           params: {
@@ -27,7 +27,7 @@ function DaftarUlangPage() {
   }, []);
 
   const handleDaftarUlang = async (id_pendaftaran: number) => {
-    const { data } = await axios.post(
+    const { data } = await AxiosInstance.post(
       `http://localhost:5000/api/pendaftaran/daftar-ulang/${id_pendaftaran}`,
     );
 

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { AxiosInstance } from "@/utils/axiosInstance";
 
 type InformasiDasarPageProps = {
   params: {
@@ -47,7 +47,7 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
   // diawal get dlu informasi dasarnya
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get<InformasiDasar>(
+      const { data } = await AxiosInstance.get<InformasiDasar>(
         `http://localhost:5000/api/rekam-medis/informasi-dasar/${params.id_rkm_med}`,
       );
 
@@ -64,7 +64,7 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
       Object.values(informasiDasar).every((value) => value)
     ) {
       // klo udh diisi semua
-      const { data } = await axios.post(
+      const { data } = await AxiosInstance.post(
         `http://localhost:5000/api/rekam-medis/informasi-dasar/${params.id_rkm_med}`,
         informasiDasar,
       );

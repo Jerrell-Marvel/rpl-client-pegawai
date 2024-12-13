@@ -1,4 +1,5 @@
 export type Pendaftaran = {
+  id_pasien: number;
   nama_pasien: string;
   id_pendaftaran: number;
   no_rkm_medis: string;

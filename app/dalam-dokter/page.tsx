@@ -12,6 +12,8 @@ function PemanggilanPage() {
   const [pendaftaran, setPendaftaran] = useState<Pemanggilan[]>([]);
 
   console.log(pendaftaran);
+
+  console.log(pendaftaran);
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get<Pemanggilan[]>(
@@ -41,6 +43,14 @@ function PemanggilanPage() {
                 href={`/diagnosis/${p.id_rkm_med}`}
               >
                 Diagnosis
+              </Button>
+
+              <Button
+                as={Link}
+                className="bg-primary text-white"
+                href={`/riwayat-rekam-medis/${p.id_pasien}`}
+              >
+                Riwayat Rekam Medis
               </Button>
             </PemanggilanCard>
           </>

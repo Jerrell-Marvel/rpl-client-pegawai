@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { AxiosInstance } from "@/utils/axiosInstance";
+import { p } from "framer-motion/client";
 
 type InformasiDasarPageProps = {
   params: {
@@ -52,21 +53,37 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
     null,
   );
 
+  const [dokumenRekamMedis, setDokumenRekamMedis] = useState<
+    DokumenRekamMedis[] | null
+  >(null);
+
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
   // diawal get dlu informasi dasarnya
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await AxiosInstance.get<{
         informasi_dasar: InformasiDasar;
-        dokumen_rekam_medis: DokumenRekamMedis;
+        dokumen_rekam_medis: DokumenRekamMedis[];
       }>(
         `http://localhost:5000/api/rekam-medis/informasi-dasar/${params.id_rkm_med}`,
       );
 
       setInformasiDasar(data.informasi_dasar);
+      setDokumenRekamMedis(data.dokumen_rekam_medis);
     };
 
     fetchData();
   }, []);
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+
+      setSelectedFiles((prev) => [...prev, ...fileArray]);
+    }
+  };
 
   // save update ke backend
   const handleSave = async () => {
@@ -75,9 +92,18 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
       Object.values(informasiDasar).every((value) => value)
     ) {
       // klo udh diisi semua
+      const formData = new FormData();
+      selectedFiles.forEach((file, index) => {
+        formData.append(`dokumen_rekam_medis`, file);
+      });
+
+      for (const [key, value] of Object.entries(informasiDasar)) {
+        formData.append(key, String(value));
+      }
+
       const { data } = await AxiosInstance.post(
         `http://localhost:5000/api/rekam-medis/informasi-dasar/${params.id_rkm_med}`,
-        informasiDasar,
+        formData,
       );
     }
   };
@@ -96,9 +122,27 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
     }
   };
 
+  const downloadFile = async (filename: string) => {
+    try {
+      const response = await AxiosInstance.get(
+        `http://localhost:5000/uploads/${filename}`,
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.log("error cuy");
+    }
+  };
+
   return (
     <main>
-      {informasiDasar ? (
+      {informasiDasar && dokumenRekamMedis ? (
         <>
           {informasiDasarFields.map((informasiDasarField) => {
             return (
@@ -137,6 +181,21 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
               <SelectItem key={golDarah}>{golDarah}</SelectItem>
             ))}
           </Select>
+
+          <Input type="file" multiple onChange={handleFileChange} />
+
+          <ul>
+            {dokumenRekamMedis.map((dkm) => {
+              return (
+                <li key={dkm.id_dkm} className="flex gap-6">
+                  <Button onClick={() => downloadFile(dkm.path_file)}>
+                    {dkm.path_file}
+                  </Button>
+                  <Button className="bg-red-600 text-white">Delete</Button>
+                </li>
+              );
+            })}
+          </ul>
         </>
       ) : null}
       {JSON.stringify(informasiDasar)};

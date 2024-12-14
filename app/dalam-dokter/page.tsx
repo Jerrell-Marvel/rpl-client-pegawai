@@ -44,14 +44,6 @@ function PemanggilanPage() {
               >
                 Diagnosis
               </Button>
-
-              <Button
-                as={Link}
-                className="bg-primary text-white"
-                href={`/riwayat-rekam-medis/${p.id_pasien}`}
-              >
-                Riwayat Rekam Medis
-              </Button>
             </PemanggilanCard>
           </>
         );

@@ -1,6 +1,6 @@
 "use client";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem, Tooltip } from "@nextui-org/react";
 import { AxiosInstance } from "@/utils/axiosInstance";
 import { p } from "framer-motion/client";
 
@@ -49,6 +49,8 @@ const informasiDasarFields: {
 const golonganDarahOption = ["a", "b", "ab", "o"];
 
 function InformasiDasarPage({ params }: InformasiDasarPageProps) {
+  const current_date =  new Date();
+
   const [informasiDasar, setInformasiDasar] = useState<InformasiDasar | null>(
     null,
   );
@@ -150,70 +152,82 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
   };
 
   return (
-    <main>
-      {informasiDasar && dokumenRekamMedis ? (
-        <>
-          {informasiDasarFields.map((informasiDasarField) => {
-            return (
-              <Input
-                key={informasiDasarField.field}
-                label={informasiDasarField.displayText}
-                placeholder={informasiDasarField.displayText}
-                value={String(informasiDasar[informasiDasarField.field] || "")}
+    <main className="m-0 flex flex-col gap-8 p-12 max-h-screen overflow-y-auto">
+      <div className="p-4 pl-8 bg-white border-b border-black shadow-md">
+
+        <p className="text-xs text-m text-gray-500">{current_date.toDateString()}</p>
+        <h1 className="text-3xl font-bold text-gray-800 mt-2">Pemanggilan Pasien</h1>
+
+      </div>
+      <div className="flex flex-col gap-8 items-center bg-gray-50 py-4 px-4  max-h-[70rem]">
+
+          {informasiDasar && dokumenRekamMedis ? (
+            <>
+              {informasiDasarFields.map((informasiDasarField) => {
+                return (
+                  <Input
+                    className="border border-black rounded-xl"
+                    key={informasiDasarField.field}
+                    label={informasiDasarField.displayText}
+                    
+                    placeholder={informasiDasarField.displayText}
+                    value={String(informasiDasar[informasiDasarField.field] || "")}
+                    onChange={(e) => {
+                      handleChange(
+                        informasiDasarField.field,
+                        Number(e.target.value),
+                      );
+                    }}
+                    type="number"
+                    min={0}
+                  />
+                );
+              })}
+
+              <Select
+                className=""
+                label="Golongan Darah"
+                placeholder="Select Golongan Darah"
+                selectedKeys={
+                  informasiDasar.golongan_darah
+                    ? [informasiDasar.golongan_darah]
+                    : []
+                }
+                variant="bordered"
                 onChange={(e) => {
-                  handleChange(
-                    informasiDasarField.field,
-                    Number(e.target.value),
-                  );
+                  handleChange("golongan_darah", e.target.value);
                 }}
-                type="number"
-                min={0}
-              />
-            );
-          })}
+              >
+                {golonganDarahOption.map((golDarah) => (
+                  <SelectItem key={golDarah}>{golDarah}</SelectItem>
+                ))}
+              </Select>
 
-          <Select
-            className=""
-            label="Golongan Darah"
-            placeholder="Select Golongan Darah"
-            selectedKeys={
-              informasiDasar.golongan_darah
-                ? [informasiDasar.golongan_darah]
-                : []
-            }
-            variant="bordered"
-            onChange={(e) => {
-              handleChange("golongan_darah", e.target.value);
-            }}
-          >
-            {golonganDarahOption.map((golDarah) => (
-              <SelectItem key={golDarah}>{golDarah}</SelectItem>
-            ))}
-          </Select>
+              <ul>
+                {dokumenRekamMedis.map((dkm) => {
+                  return (
+                    <li key={dkm.id_dkm} className="flex gap-6">
+                      <Button onClick={() => downloadFile(dkm.path_file)}>
+                        {dkm.path_file}
+                      </Button>
+                      <Button
+                        className="bg-red-600 text-white"
+                        onClick={() => handleDelete(dkm.id_dkm)}
+                      >
+                        Delete
+                      </Button>
+                    </li>
+                  );
+                })}
+              </ul>
 
-          <ul>
-            {dokumenRekamMedis.map((dkm) => {
-              return (
-                <li key={dkm.id_dkm} className="flex gap-6">
-                  <Button onClick={() => downloadFile(dkm.path_file)}>
-                    {dkm.path_file}
-                  </Button>
-                  <Button
-                    className="bg-red-600 text-white"
-                    onClick={() => handleDelete(dkm.id_dkm)}
-                  >
-                    Delete
-                  </Button>
-                </li>
-              );
-            })}
-          </ul>
+              <Input type="file" multiple onChange={handleFileChange} />
+            </>
+          ) : null}
+          {JSON.stringify(informasiDasar)};
+          <Button onClick={handleSave}>Save</Button>
+      </div>
 
-          <Input type="file" multiple onChange={handleFileChange} />
-        </>
-      ) : null}
-      {JSON.stringify(informasiDasar)};
-      <Button onClick={handleSave}>Save</Button>
     </main>
   );
 }

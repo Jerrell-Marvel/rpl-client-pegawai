@@ -34,16 +34,60 @@ const DiagnosisFields: {
   { displayText: "Keluhan", field: "keluhan" },
 ];
 
+type InformasiDasar = {
+  // questionable
+  //   pemeriksaan_fisik: string | null;
+  //   pemeriksaan_penunjang: string | null;
+  //   riwayat_penyakit: string | null;
+  //   keluhan: string | null;
+  // end
+
+  id_rkm_med: number;
+  tinggi_badan: number | null;
+  berat_badan: number | null;
+  golongan_darah: string | null;
+  diastolik: number | null;
+  sistolik: number | null;
+  denyut_nadi: number | null;
+};
+
+type DokumenRekamMedis = {
+  id_dkm: number;
+  uploaded_at: string;
+  path_file: string;
+  id_rkm_med: number;
+  is_active: boolean;
+};
+
 function DiagnosisPage({ params }: DiagnosisPageProps) {
+  //INFORMASI DASAR
+  const [informasiDasar, setInformasiDasar] = useState<InformasiDasar | null>(
+    null,
+  );
+
+  const [dokumenRekamMedis, setDokumenRekamMedis] = useState<
+    DokumenRekamMedis[] | null
+  >(null);
+
   const [diagnosis, setDiagnosis] = useState<Diagnosis | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await AxiosInstance.get<Diagnosis>(
+      const { data: diagnosisData } = await AxiosInstance.get<Diagnosis>(
         `http://localhost:5000/api/rekam-medis/diagnosis/${params.id_rkm_med}`,
       );
 
-      setDiagnosis(data);
+      setDiagnosis(diagnosisData);
+
+      const { data: informasiDasarData } = await AxiosInstance.get<{
+        informasi_dasar: InformasiDasar;
+        dokumen_rekam_medis: DokumenRekamMedis[];
+      }>(
+        `http://localhost:5000/api/rekam-medis/informasi-dasar/${params.id_rkm_med}`,
+      );
+
+      setInformasiDasar(informasiDasarData.informasi_dasar);
+      setDokumenRekamMedis(informasiDasarData.dokumen_rekam_medis);
     };
 
     fetchData();
@@ -69,8 +113,49 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
     }
   };
 
+  const downloadFile = async (filename: string) => {
+    const response = await AxiosInstance.get(
+      `http://localhost:5000/uploads/${filename}`,
+      {
+        responseType: "blob",
+      },
+    );
+
+    const link = document.createElement("a");
+    const url = window.URL.createObjectURL(response.data);
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <main>
+      {informasiDasar && dokumenRekamMedis ? (
+        <>
+          <div>
+            {Object.entries(informasiDasar).map(([k, v]) => {
+              return (
+                <div key={k}>
+                  <p>{k}</p>
+                  <p>{v}</p>
+                </div>
+              );
+            })}
+          </div>
+          <ul>
+            {dokumenRekamMedis.map((dkm) => {
+              return (
+                <li key={dkm.id_dkm} className="flex gap-6">
+                  <Button onClick={() => downloadFile(dkm.path_file)}>
+                    {dkm.path_file}
+                  </Button>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      ) : null}
       {diagnosis ? (
         <>
           {DiagnosisFields.map((diagnosisField) => {

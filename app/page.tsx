@@ -8,6 +8,7 @@ import {
   SVGProps,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { Input } from "@nextui-org/react";
@@ -16,6 +17,7 @@ import { AxiosInstance } from "@/utils/axiosInstance";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { TokenType } from "@/types/token";
+import { div } from "framer-motion/client";
 
 type FormValues = {
   email: string;
@@ -29,7 +31,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<string>("");
   const [isSubmiting, setIsSubmiting] = useState<boolean>(false);
 
-  const [userRole, setUserRole] = useState<string>("");
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   const validateEmail = (value: string) =>
     value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i);
@@ -73,25 +75,7 @@ export default function LoginPage() {
             const { role }: TokenType = jwtDecode(response.data.token);
 
             setUserRole(role);
-            // let targetRoute = "/";
-            // switch (role) {
-            //   case "dokter":
-            //     targetRoute = "/";
-            //     break;
-            //   case "sis-admin":
-            //     targetRoute = "/";
-            //     break;
-            //   case "pet-admin":
-            //     targetRoute = "/";
-            //     break;
-            //   case "perawat":
-            //     targetRoute = "/";
-            //     break;
-            //   default:
-            //     break;
-            // }
-            // window.location.href = targetRoute;
-            // router.refresh();
+            window.location.href = "/";
           }
         })
         .catch((err) => {
@@ -112,86 +96,103 @@ export default function LoginPage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
+    let newRole = "";
+
     if (token) {
-      router.push("/");
+      const { role }: TokenType = jwtDecode(token);
+      newRole = role;
     }
+
+    setUserRole(newRole);
   }, []);
 
-  return (
-    <>
-      <section className="flex min-h-screen flex-col md:flex-row">
-        <div className="top-0 w-1/2 flex-1">
-          <Image
-            src={Background}
-            alt="Image Tempat Administrasi"
-            className="h-full w-full object-cover"
-          />
-        </div>
+  console.log(userRole);
 
-        <div className="flex w-1/2 flex-col items-center justify-evenly bg-white">
-          {/* <Image src={LogoVida} alt="Logo Vida" className="h[40%] w-[40%]" /> */}
-          <h2 className="text-3xl font-semibold text-primaryCol">Masuk Akun</h2>
+  if (userRole) {
+    return <div>Halo {userRole}</div>;
+  }
 
-          <div className="h-auto w-full max-w-md">
-            <form
-              onSubmit={handleSubmit}
-              className="mb-4 flex flex-col gap-y-4 bg-white px-10"
-            >
-              <div className="flex flex-col gap-2 text-base">
-                <h5 className="text-center text-red-700">{errors}</h5>
-                <Input
-                  required
-                  errorMessage="Masukkan email yang valid"
-                  isInvalid={emailIsInvalid}
-                  label="Email"
-                  name="email"
-                  placeholder="Enter your email"
-                  value={values.email}
-                  onChange={handleChange}
-                  variant="bordered"
-                />
-                <Input
-                  required
-                  errorMessage="Masukkan password yang valid"
-                  isInvalid={passwordIsInvalid}
-                  name="password"
-                  value={values.password}
-                  onChange={handleChange}
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={toggleVisibility}
-                    >
-                      {isVisible ? (
-                        <EyeSlashFilledIcon className="pointer-events-none text-2xl text-default-400" />
-                      ) : (
-                        <EyeFilledIcon className="pointer-events-none text-2xl text-default-400" />
-                      )}
-                    </button>
-                  }
-                  label="Password"
-                  placeholder="Enter your password"
-                  type={isVisible ? "text" : "password"}
-                  variant="bordered"
-                />
-              </div>
-              <div>
-                <button
-                  className={`w-full rounded-full px-4 py-2 font-medium text-white transition focus:outline-none ${isSubmiting ? "cursor-default bg-slate-600" : "bg-primaryCol hover:bg-secondaryCol"}`}
-                  type="submit"
-                  disabled={isSubmiting}
-                >
-                  Masuk
-                </button>
-              </div>
-            </form>
+  if (userRole !== null) {
+    return (
+      <>
+        <section className="flex min-h-screen">
+          <div className="top-0 w-1/2 flex-1">
+            <Image
+              src={Background}
+              alt="Image Tempat Administrasi"
+              className="h-full w-full object-cover"
+            />
           </div>
-        </div>
-      </section>
-    </>
-  );
+
+          <div className="flex w-1/2 flex-col items-center justify-evenly bg-white">
+            {/* <Image src={LogoVida} alt="Logo Vida" className="h[40%] w-[40%]" /> */}
+            <h2 className="text-3xl font-semibold text-primaryCol">
+              Masuk Akun
+            </h2>
+
+            <div className="h-auto w-full max-w-md">
+              <form
+                onSubmit={handleSubmit}
+                className="mb-4 flex flex-col gap-y-4 bg-white px-10"
+              >
+                <div className="flex flex-col gap-2 text-base">
+                  <h5 className="text-center text-red-700">{errors}</h5>
+                  <Input
+                    required
+                    errorMessage="Masukkan email yang valid"
+                    isInvalid={emailIsInvalid}
+                    label="Email"
+                    name="email"
+                    placeholder="Enter your email"
+                    value={values.email}
+                    onChange={handleChange}
+                    variant="bordered"
+                  />
+                  <Input
+                    required
+                    errorMessage="Masukkan password yang valid"
+                    isInvalid={passwordIsInvalid}
+                    name="password"
+                    value={values.password}
+                    onChange={handleChange}
+                    endContent={
+                      <button
+                        aria-label="toggle password visibility"
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={toggleVisibility}
+                      >
+                        {isVisible ? (
+                          <EyeSlashFilledIcon className="pointer-events-none text-2xl text-default-400" />
+                        ) : (
+                          <EyeFilledIcon className="pointer-events-none text-2xl text-default-400" />
+                        )}
+                      </button>
+                    }
+                    label="Password"
+                    placeholder="Enter your password"
+                    type={isVisible ? "text" : "password"}
+                    variant="bordered"
+                  />
+                </div>
+                <div>
+                  <button
+                    className={`w-full rounded-full px-4 py-2 font-medium text-white transition focus:outline-none ${isSubmiting ? "cursor-default bg-slate-600" : "bg-primaryCol hover:bg-secondaryCol"}`}
+                    type="submit"
+                    disabled={isSubmiting}
+                  >
+                    Masuk
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  return null;
 }
 export const EyeSlashFilledIcon = (props: SVGProps<SVGSVGElement>) => {
   return (

@@ -5,6 +5,7 @@ import { NextUIProvider } from "@nextui-org/react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import "react-toastify/dist/ReactToastify.css";
 import SideBar from "@/components/SideBar";
+import SideBarWrapper from "@/components/SideBarWrapper";
 
 const notoSans = Noto_Sans({ subsets: ["latin"] });
 
@@ -23,10 +24,7 @@ export default function RootLayout({
       <body className={`${notoSans.className} `}>
         <AppRouterCacheProvider>
           <NextUIProvider>
-            <div className="flex">
-              <SideBar />
-              <div className="min-h-screen w-full bg-slate-100">{children}</div>
-            </div>
+            <SideBarWrapper>{children}</SideBarWrapper>
           </NextUIProvider>
         </AppRouterCacheProvider>
       </body>

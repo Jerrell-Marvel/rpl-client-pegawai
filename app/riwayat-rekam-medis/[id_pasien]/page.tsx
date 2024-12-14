@@ -45,7 +45,7 @@ function RiwayatRekamMedisPage({ params }: RiwayatRekammedisPageProps) {
     };
 
     fetchData();
-  });
+  }, []);
   return (
     <div>
       {rekamMedis?.map((rkm) => {

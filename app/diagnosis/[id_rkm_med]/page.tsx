@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Link, Select, SelectItem } from "@nextui-org/react";
 import { AxiosInstance } from "@/utils/axiosInstance";
 
 type DiagnosisPageProps = {
@@ -10,6 +10,7 @@ type DiagnosisPageProps = {
 };
 
 type Diagnosis = {
+  id_pasien: number;
   resep_obat: string | null;
   id_rkm_med: number;
   prognosis_tindakan_lanjut: string | null;
@@ -158,6 +159,13 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
       ) : null}
       {diagnosis ? (
         <>
+          <Button
+            as={Link}
+            className="bg-primary text-white"
+            href={`/riwayat-rekam-medis/${diagnosis.id_pasien}`}
+          >
+            Riwayat Rekam Medis
+          </Button>
           {DiagnosisFields.map((diagnosisField) => {
             return (
               <Input

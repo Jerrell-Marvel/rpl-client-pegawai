@@ -7,9 +7,10 @@ import { AxiosInstance } from "@/utils/axiosInstance";
 import { Button, ScrollShadow } from "@nextui-org/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 function PemanggilanPage() {
-  const current_date =  new Date();
+  const current_date = new Date();
   const [pendaftaran, setPendaftaran] = useState<Pemanggilan[]>([]);
 
   console.log(pendaftaran);
@@ -42,19 +43,26 @@ function PemanggilanPage() {
       (p) => p.id_pendaftaran !== id_pendaftaran,
     );
     setPendaftaran(newPendaftaran);
+
+    toast.success("berhasil");
   };
 
   return (
     <main className="flex flex-col gap-8 p-12">
-      <div className="p-4 pl-8 bg-white border-b border-black shadow-md">
-        <p className="text-xs text-m text-gray-500" >{current_date.toDateString()}</p>
-        <h1 className="text-3xl font-bold text-gray-800 mt-2">Daftar Ulang Pasien</h1> 
-
+      <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
+        <p className="text-m text-xs text-gray-500">
+          {current_date.toDateString()}
+        </p>
+        <h1 className="mt-2 text-3xl font-bold text-gray-800">
+          Daftar Ulang Pasien
+        </h1>
       </div>
 
-
-      <div className="flex flex-col gap-8 items-center bg-gray-50 py-4">
-        <ScrollShadow hideScrollBar className="max-w-[1200px] w-full max-h-[740px] overflow-y-auto grid sm:grid-cols-1 lg:grid-cols-2  gap-8">
+      <div className="flex flex-col items-center gap-8 bg-gray-50 py-4">
+        <ScrollShadow
+          hideScrollBar
+          className="grid max-h-[740px] w-full max-w-[1200px] gap-8 overflow-y-auto sm:grid-cols-1 lg:grid-cols-2"
+        >
           {pendaftaran.map((p) => {
             return (
               <>
@@ -73,9 +81,7 @@ function PemanggilanPage() {
               </>
             );
           })}
-
         </ScrollShadow>
-
       </div>
     </main>
   );

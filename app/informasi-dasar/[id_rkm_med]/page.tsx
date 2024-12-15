@@ -3,6 +3,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { Button, Input, Select, SelectItem, Tooltip } from "@nextui-org/react";
 import { AxiosInstance } from "@/utils/axiosInstance";
 import { p } from "framer-motion/client";
+import { toast } from "react-toastify";
 
 type InformasiDasarPageProps = {
   params: {
@@ -49,7 +50,7 @@ const informasiDasarFields: {
 const golonganDarahOption = ["a", "b", "ab", "o"];
 
 function InformasiDasarPage({ params }: InformasiDasarPageProps) {
-  const current_date =  new Date();
+  const current_date = new Date();
 
   const [informasiDasar, setInformasiDasar] = useState<InformasiDasar | null>(
     null,
@@ -107,6 +108,8 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
         `http://localhost:5000/api/rekam-medis/informasi-dasar/${params.id_rkm_med}`,
         formData,
       );
+
+      toast.success("berhasil disimpan");
     }
   };
 
@@ -149,64 +152,65 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
       (dkm) => dkm.id_dkm !== id_dkm,
     );
     setDokumenRekamMedis(newDokumenRekamMedis);
+
+    toast.success("berhasil dihapus");
   };
 
   return (
-    <main className="m-0 flex flex-col gap-8 p-12 max-h-screen overflow-y-auto">
-      <div className="p-4 pl-8 bg-white border-b border-black shadow-md">
-
-        <p className="text-xs text-m text-gray-500">{current_date.toDateString()}</p>
-        <h1 className="text-3xl font-bold text-gray-800 mt-2">Pemanggilan Pasien</h1>
-
+    <main className="m-0 flex max-h-screen flex-col gap-8 overflow-y-auto p-12">
+      <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
+        <p className="text-m text-xs text-gray-500">
+          {current_date.toDateString()}
+        </p>
+        <h1 className="mt-2 text-3xl font-bold text-gray-800">
+          Pemanggilan Pasien
+        </h1>
       </div>
-      <div className="flex flex-col gap-8 items-center bg-gray-50 py-4 px-4  max-h-[70rem]">
-
-          <div></div>
-          {informasiDasar && dokumenRekamMedis ? (
-            <>
+      <div className="flex max-h-[70rem] flex-col items-center gap-8 bg-gray-50 px-4 py-4">
+        <div></div>
+        {informasiDasar && dokumenRekamMedis ? (
+          <>
             <div className="grid grid-cols-[300px_minmax(500px,_1fr)_100px] gap-4">
               <div>
-                  {informasiDasarFields.map((informasiDasarField) => {
-                    let text;
-                    switch(informasiDasarField.field){
-                      case "tinggi_badan":
-                        text = `${informasiDasarField.displayText} (cm)`;
-                        break;
-                      case "berat_badan":
-                        text = `${informasiDasarField.displayText} (kg)`;
-                        break;
-                      case "diastolik":
-                      case "sistolik":
-                        text = `${informasiDasarField.displayText} (mmHg)`;
-                        break;
-                      case "denyut_nadi":
-                        text = `${informasiDasarField.displayText} (bpm)`;
-                        break;
-                    }
-
-                    return (
-                      
-                      <Input
-                        className="border border-black rounded-xl mb-4 "
-                        key={informasiDasarField.field}
-                        // label={`${informasiDasarField.displayText} (cm)`}
-                        label = {text}
-                        
-                        placeholder={informasiDasarField.displayText}
-                        value={String(informasiDasar[informasiDasarField.field] || "")}
-                        onChange={(e) => {
-                          handleChange(
-                            informasiDasarField.field,
-                            Number(e.target.value),
-                          );
-                        }}
-                        type="number"
-                        min={0}
-                      />
-                    );
+                {informasiDasarFields.map((informasiDasarField) => {
+                  let text;
+                  switch (informasiDasarField.field) {
+                    case "tinggi_badan":
+                      text = `${informasiDasarField.displayText} (cm)`;
+                      break;
+                    case "berat_badan":
+                      text = `${informasiDasarField.displayText} (kg)`;
+                      break;
+                    case "diastolik":
+                    case "sistolik":
+                      text = `${informasiDasarField.displayText} (mmHg)`;
+                      break;
+                    case "denyut_nadi":
+                      text = `${informasiDasarField.displayText} (bpm)`;
+                      break;
                   }
-                  
-                  )}
+
+                  return (
+                    <Input
+                      className="mb-4 rounded-xl border border-black"
+                      key={informasiDasarField.field}
+                      // label={`${informasiDasarField.displayText} (cm)`}
+                      label={text}
+                      placeholder={informasiDasarField.displayText}
+                      value={String(
+                        informasiDasar[informasiDasarField.field] || "",
+                      )}
+                      onChange={(e) => {
+                        handleChange(
+                          informasiDasarField.field,
+                          Number(e.target.value),
+                        );
+                      }}
+                      type="number"
+                      min={0}
+                    />
+                  );
+                })}
 
                 <Select
                   className="bg-white"
@@ -227,43 +231,37 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
                   ))}
                 </Select>
               </div>
-              <div className="p-6 bg-stone-200 rounded-xl border border-black overflow-y-auto">
-                  <ul>
-                    {dokumenRekamMedis.map((dkm) => {
-                      return (
-                        <li key={dkm.id_dkm} className="flex gap-6">
-
-
-                          <Button onClick={() => downloadFile(dkm.path_file)}>
-                            {dkm.path_file}
-                          </Button>
-                          <Button
-                            className="mx-4 bg-red-600 text-white"
-                            onClick={() => handleDelete(dkm.id_dkm)}
-                          >
-                            Delete
-                          </Button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  <Input
-                  className="border border-black rounded-xl"
-                  type="file" multiple onChange={handleFileChange} />
-
+              <div className="overflow-y-auto rounded-xl border border-black bg-stone-200 p-6">
+                <ul>
+                  {dokumenRekamMedis.map((dkm) => {
+                    return (
+                      <li key={dkm.id_dkm} className="flex gap-6">
+                        <Button onClick={() => downloadFile(dkm.path_file)}>
+                          {dkm.path_file}
+                        </Button>
+                        <Button
+                          className="mx-4 bg-red-600 text-white"
+                          onClick={() => handleDelete(dkm.id_dkm)}
+                        >
+                          Delete
+                        </Button>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <Input
+                  className="rounded-xl border border-black"
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                />
               </div>
-
-
             </div>
+          </>
+        ) : null}
 
-
-
-            </>
-          ) : null}
-       
-          <Button onClick={handleSave}>Save</Button>
+        <Button onClick={handleSave}>Save</Button>
       </div>
-
     </main>
   );
 }

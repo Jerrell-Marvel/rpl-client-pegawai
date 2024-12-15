@@ -7,9 +7,10 @@ import { AxiosInstance } from "@/utils/axiosInstance";
 import { Button, ScrollShadow } from "@nextui-org/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 function PemanggilanPage() {
-  const current_date =  new Date();
+  const current_date = new Date();
 
   const [pendaftaran, setPendaftaran] = useState<Pemanggilan[]>([]);
 
@@ -43,46 +44,52 @@ function PemanggilanPage() {
       (p) => p.id_pendaftaran !== id_pendaftaran,
     );
     setPendaftaran(newPendaftaran);
+
+    toast.success("berhasil");
   };
 
   return (
-    <main className=" m-0 flex flex-col gap-8 p-12 max-h-screen overflow-y-auto">
-      <div className="p-4 pl-8 bg-white border-b border-black shadow-md">
-
-        <p className="text-xs text-m text-gray-500">{current_date.toDateString()}</p>
-        <h1 className="text-3xl font-bold text-gray-800 mt-2">Pemanggilan Pasien</h1>
-
+    <main className="m-0 flex max-h-screen flex-col gap-8 overflow-y-auto p-12">
+      <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
+        <p className="text-m text-xs text-gray-500">
+          {current_date.toDateString()}
+        </p>
+        <h1 className="mt-2 text-3xl font-bold text-gray-800">
+          Pemanggilan Pasien
+        </h1>
       </div>
 
-  <div className="flex flex-col gap-8 items-center bg-gray-50 py-4 max-h-[70rem]">
-    <ScrollShadow hideScrollBar className="max-w-[1200px] w-full  overflow-y-auto grid sm:grid-cols-1 lg:grid-cols-2 gap-8">
-      {pendaftaran.map((p) => {
-        return (
-          <div key={p.id_pendaftaran} className="my-[20px]">
-            <PemanggilanCard pemanggilan={p}>
-              <div className="flex justify-end">
-                <Button
-                  className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition-all"
-                  onClick={() => handleSelesaiClick(p.id_pendaftaran)}
-                >
-                  Selesai
-                </Button>
-                <Button
-                  as={Link}
-                  className="bg-primary text-white px-6 mx-2 py-2 rounded-md hover:bg-blue-800 transition-all"
-                  href={`/informasi-dasar/${p.id_rkm_med}`}
-                >
-                  Informasi Dasar
-                </Button>
+      <div className="flex max-h-[70rem] flex-col items-center gap-8 bg-gray-50 py-4">
+        <ScrollShadow
+          hideScrollBar
+          className="grid w-full max-w-[1200px] gap-8 overflow-y-auto sm:grid-cols-1 lg:grid-cols-2"
+        >
+          {pendaftaran.map((p) => {
+            return (
+              <div key={p.id_pendaftaran} className="my-[20px]">
+                <PemanggilanCard pemanggilan={p}>
+                  <div className="flex justify-end">
+                    <Button
+                      className="rounded-md bg-green-500 px-6 py-2 text-white transition-all hover:bg-green-600"
+                      onClick={() => handleSelesaiClick(p.id_pendaftaran)}
+                    >
+                      Selesai
+                    </Button>
+                    <Button
+                      as={Link}
+                      className="mx-2 rounded-md bg-primary px-6 py-2 text-white transition-all hover:bg-blue-800"
+                      href={`/informasi-dasar/${p.id_rkm_med}`}
+                    >
+                      Informasi Dasar
+                    </Button>
+                  </div>
+                </PemanggilanCard>
               </div>
-            </PemanggilanCard>
-          </div>
-        );
-      })}
-    </ScrollShadow>
-  </div>
-</main>
-
+            );
+          })}
+        </ScrollShadow>
+      </div>
+    </main>
   );
 }
 

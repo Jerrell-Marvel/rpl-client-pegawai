@@ -27,7 +27,12 @@ const allowedUrlAccessMapper: { [key: string]: string[] } = {
     "menunggu-dokter",
     "dalam-dokter",
   ],
-  // "sis-admin":
+  "sis-admin": [
+    "daftar-ulang",
+    "pemanggilan",
+    "menunggu-dokter",
+    "dalam-dokter",
+  ],
 };
 
 export default function SideBar({ token }: SideBarProps) {
@@ -42,6 +47,8 @@ export default function SideBar({ token }: SideBarProps) {
   // perawat : pemanggilan, menunggu-dokter, dalam-dokter
 
   // pet-admin : semua
+
+  console.log(userRole);
 
   return (
     <>

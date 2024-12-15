@@ -2,9 +2,11 @@
 
 import PemanggilanCard from "@/components/PemanggilanCard";
 import PendaftaranCard from "@/components/PendaftaranCard";
-import { Pemanggilan, Pendaftaran } from "@/types/pendaftaran";
+import { PendaftaranWithAntrian, Pendaftaran } from "@/types/pendaftaran";
+import { TokenType } from "@/types/token";
 import { AxiosInstance } from "@/utils/axiosInstance";
 import { Button, ScrollShadow } from "@nextui-org/react";
+import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -12,12 +14,12 @@ import { toast } from "react-toastify";
 function PemanggilanPage() {
   const current_date = new Date();
 
-  const [pendaftaran, setPendaftaran] = useState<Pemanggilan[]>([]);
+  const [pendaftaran, setPendaftaran] = useState<PendaftaranWithAntrian[]>([]);
 
   console.log(pendaftaran);
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await AxiosInstance.get<Pemanggilan[]>(
+      const { data } = await AxiosInstance.get<PendaftaranWithAntrian[]>(
         "http://localhost:5000/api/pendaftaran",
         {
           params: {
@@ -47,6 +49,9 @@ function PemanggilanPage() {
 
     toast.success("berhasil");
   };
+
+  const token = window.localStorage.getItem("token") || "";
+  const { role }: TokenType = jwtDecode(token);
 
   return (
     <main className="m-0 flex max-h-screen flex-col gap-8 overflow-y-auto p-12">

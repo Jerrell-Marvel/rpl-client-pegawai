@@ -11,8 +11,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { Input } from "@nextui-org/react";
+import { Input, User } from "@nextui-org/react";
 import Link from "next/link";
+import cat from "@/public/cat.jpg"
 import { AxiosInstance } from "@/utils/axiosInstance";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
@@ -26,6 +27,8 @@ type FormValues = {
 
 export default function LoginPage() {
   const router = useRouter();
+  const current_date = new Date();
+
 
   const [values, setValues] = useState<FormValues>({ email: "", password: "" });
   const [errors, setErrors] = useState<string>("");
@@ -109,7 +112,54 @@ export default function LoginPage() {
   console.log(userRole);
 
   if (userRole) {
-    return <div>Halo {userRole}</div>;
+    return (
+      <>
+        <header className="border-b border-black bg-white p-4 pl-8 shadow-md">
+          <p className="text-gray-500 text-sm">
+            {current_date.toDateString()}
+          </p>
+          <h1 className="mt-2 text-3xl font-bold text-gray-800">
+            Dashboard
+          </h1>
+        </header>
+    
+        <main className="flex justify-around m-6 rounded-lg bg-stone-200 h-96">
+          <section className="bg-white rounded-lg shadow-lg p-8 max-w-md text-center">
+            <h1 className="text-4xl font-bold text-blue-600 mb-4">
+              Hai, {userRole}!
+            </h1>
+            <p className="text-gray-600 mb-6">
+              Selamat Bekerja :D.
+            </p>
+    
+            <div className="mb-6">
+              <User
+                avatarProps={{
+                  src: `${cat.src}`,
+                }}
+                description="Admin"
+                name="Mr. Doe"
+              />
+            </div>
+          </section>
+    
+          <section className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+            <div className="flex justify-center text-2xl mb-6 font-bold">
+              Quote Of the Day
+            </div>
+    
+            <div className="flex flex-col justify-center items-center">
+              <blockquote>
+                The whole point of getting things done is knowing what to leave undone.
+                <br />
+                <br />
+                <cite className="font-bold flex justify-end">- Oswald Chambers</cite>
+              </blockquote>
+            </div>
+          </section>
+        </main>
+      </>
+    );
   }
 
   if (userRole !== null) {

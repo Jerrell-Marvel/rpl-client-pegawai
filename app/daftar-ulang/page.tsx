@@ -3,12 +3,12 @@
 import PendaftaranCard from "@/components/PendaftaranCard";
 import { Pendaftaran } from "@/types/pendaftaran";
 import { AxiosInstance } from "@/utils/axiosInstance";
-import { Button , ScrollShadow } from "@nextui-org/react";
+import { Button, ScrollShadow } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-
+import { toast } from "react-toastify";
 
 function DaftarUlangPage() {
-  const current_date =  new Date();
+  const current_date = new Date();
 
   const [pendaftaran, setPendaftaran] = useState<Pendaftaran[]>([]);
 
@@ -39,44 +39,47 @@ function DaftarUlangPage() {
     );
 
     setPendaftaran(newPendaftaran);
+
+    toast.success("pasien telah terdaftar ulang");
   };
   return (
-
     <main>
-      <div className="p-4 pl-8 bg-white border-b border-black shadow-md">
-        <p className="text-xs text-m text-gray-500" >{current_date.toDateString()}</p>
-        <h1 className="text-3xl font-bold text-gray-800 mt-2">Daftar Ulang Pasien</h1> 
-
+      <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
+        <p className="text-m text-xs text-gray-500">
+          {current_date.toDateString()}
+        </p>
+        <h1 className="mt-2 text-3xl font-bold text-gray-800">
+          Daftar Ulang Pasien
+        </h1>
       </div>
 
-        <div className="flex flex-col gap-8 items-center bg-gray-50 py-4">
-          <ScrollShadow hideScrollBar className="max-w-[1200px] w-full max-h-[740px] overflow-y-auto grid sm:grid-cols-1 lg:grid-cols-2  gap-8">
-
-            
-              {pendaftaran.map((p) => {
-                return (
-                  <>
-                  <div className="my-[20px]">
-                    <PendaftaranCard pendaftaran={p}>
-                      <div className="flex justify-end">
-                        <Button
-                            className="bg-primary text-white px-6 py-2 rounded-md hover:bg-blue-800 transition-all"
-                          onClick={() => {
-                            handleDaftarUlang(p.id_pendaftaran);
-                          }}
-                          >
-                          Daftarkan
-                        </Button>
-                      </div>
-                    </PendaftaranCard>
-
-                  </div>
-                  </>
-                );
-              })}
-          </ScrollShadow>
-        </div>
-            
+      <div className="flex flex-col items-center gap-8 bg-gray-50 py-4">
+        <ScrollShadow
+          hideScrollBar
+          className="grid max-h-[740px] w-full max-w-[1200px] gap-8 overflow-y-auto sm:grid-cols-1 lg:grid-cols-2"
+        >
+          {pendaftaran.map((p) => {
+            return (
+              <>
+                <div className="my-[20px]">
+                  <PendaftaranCard pendaftaran={p}>
+                    <div className="flex justify-end">
+                      <Button
+                        className="rounded-md bg-primary px-6 py-2 text-white transition-all hover:bg-blue-800"
+                        onClick={() => {
+                          handleDaftarUlang(p.id_pendaftaran);
+                        }}
+                      >
+                        Daftarkan
+                      </Button>
+                    </div>
+                  </PendaftaranCard>
+                </div>
+              </>
+            );
+          })}
+        </ScrollShadow>
+      </div>
     </main>
   );
 }

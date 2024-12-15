@@ -18,7 +18,7 @@ import { Ruang } from "@/types/ruang";
 import { div } from "framer-motion/client";
 import { formatTime } from "@/utils/time";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import { AxiosInstance } from "@/utils/axiosInstance";
 
 type JadwalPraktikResponse = Dokter & { jadwal_praktik: Jadwal[] };
@@ -123,7 +123,7 @@ function TambahJadwalDokterPage({ params }: { params: { id_dokter: string } }) {
         const newJadwal = { ...jadwal };
         newJadwal[selectedHari] = newJadwalHari;
         setJadwal(newJadwal);
-        toast.success("jadwal added successfully", { position: "top-center" });
+        toast.success("jadwal added successfully");
 
         setStartTime(null);
         setEndTime(null);
@@ -151,12 +151,11 @@ function TambahJadwalDokterPage({ params }: { params: { id_dokter: string } }) {
       setJadwal(newJadwal);
     }
 
-    toast.success("jadwal deleted successfully", { position: "top-center" });
+    toast.success("berhasil dihapus");
   };
 
   return (
     <>
-      <ToastContainer />
       <main className="">
         <div className="h-fit w-full bg-white p-8">
           {/* Dokter, todo : extracto to component ltr */}

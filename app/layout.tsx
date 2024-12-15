@@ -6,6 +6,8 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import "react-toastify/dist/ReactToastify.css";
 import SideBar from "@/components/SideBar";
 import SideBarWrapper from "@/components/SideBarWrapper";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const notoSans = Noto_Sans({ subsets: ["latin"] });
 
@@ -21,10 +23,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${notoSans.className} `}>
+      <body className={`${notoSans.className}`}>
+        <ToastContainer position="top-center" />
         <AppRouterCacheProvider>
           <NextUIProvider>
-            <SideBarWrapper>{children}</SideBarWrapper>
+            <SideBarWrapper>
+              <div className="min-h-screen bg-slate-100">{children}</div>
+            </SideBarWrapper>
           </NextUIProvider>
         </AppRouterCacheProvider>
       </body>

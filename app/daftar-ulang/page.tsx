@@ -74,13 +74,7 @@ function DaftarUlangPage() {
                   </>
                 );
               })}
-
-        
-
           </ScrollShadow>
-          
-    
-
         </div>
             
     </main>

@@ -2,7 +2,7 @@
 
 import PemanggilanCard from "@/components/PemanggilanCard";
 import PendaftaranCard from "@/components/PendaftaranCard";
-import { Pemanggilan, Pendaftaran } from "@/types/pendaftaran";
+import { PendaftaranWithAntrian, Pendaftaran } from "@/types/pendaftaran";
 import { AxiosInstance } from "@/utils/axiosInstance";
 import { Button, ScrollShadow } from "@nextui-org/react";
 import Link from "next/link";
@@ -11,12 +11,12 @@ import { toast } from "react-toastify";
 
 function PemanggilanPage() {
   const current_date = new Date();
-  const [pendaftaran, setPendaftaran] = useState<Pemanggilan[]>([]);
+  const [pendaftaran, setPendaftaran] = useState<PendaftaranWithAntrian[]>([]);
 
   console.log(pendaftaran);
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await AxiosInstance.get<Pemanggilan[]>(
+      const { data } = await AxiosInstance.get<PendaftaranWithAntrian[]>(
         "http://localhost:5000/api/pendaftaran",
         {
           params: {

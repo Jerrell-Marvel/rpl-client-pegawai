@@ -16,18 +16,19 @@ const urlMapper: { [key: string]: { svgPath: string; displayText: string } } = {
   pemanggilan: { svgPath: "", displayText: "Pemanggilan" },
   "menunggu-dokter": { svgPath: "", displayText: "Menunggu Dokter" },
   "dalam-dokter": { svgPath: "", displayText: "Dalam Dokter" },
+  "daftar-offline": { svgPath: "", displayText: "Daftar Offline" },
 };
 
 const allowedUrlAccessMapper: { [key: string]: string[] } = {
   perawat: ["pemanggilan", "menunggu-dokter", "dalam-dokter"],
   dokter: ["dalam-dokter"],
-  "pet-admin": [
+  "pet-admin": ["daftar-ulang", "daftar-offline"],
+  "sis-admin": [
     "daftar-ulang",
     "pemanggilan",
     "menunggu-dokter",
     "dalam-dokter",
   ],
-  // "sis-admin":
 };
 
 export default function SideBar({ token }: SideBarProps) {
@@ -42,6 +43,8 @@ export default function SideBar({ token }: SideBarProps) {
   // perawat : pemanggilan, menunggu-dokter, dalam-dokter
 
   // pet-admin : semua
+
+  console.log(userRole);
 
   return (
     <>

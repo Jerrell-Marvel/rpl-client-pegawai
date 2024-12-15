@@ -14,6 +14,8 @@ export default function SideBarWrapper({
     setToken(window.localStorage.getItem("token") ?? "");
   }, []);
 
+  console.log(token);
+
   return (
     <div className={`${token ? "pl-[20vw]" : ""}`}>
       {token && <SideBar token={token} />}

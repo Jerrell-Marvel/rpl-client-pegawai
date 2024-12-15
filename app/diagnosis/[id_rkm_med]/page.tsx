@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Link, Select, SelectItem } from "@nextui-org/react";
 import { AxiosInstance } from "@/utils/axiosInstance";
+import { toast } from "react-toastify";
 
 type DiagnosisPageProps = {
   params: {
@@ -61,7 +62,7 @@ type DokumenRekamMedis = {
 };
 
 function DiagnosisPage({ params }: DiagnosisPageProps) {
-  const current_date =  new Date();
+  const current_date = new Date();
   //INFORMASI DASAR
   const [informasiDasar, setInformasiDasar] = useState<InformasiDasar | null>(
     null,
@@ -102,6 +103,8 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
       `http://localhost:5000/api/rekam-medis/diagnosis/${params.id_rkm_med}`,
       diagnosis,
     );
+
+    toast.success("berhasil disimpan");
   };
 
   const handleChange = (field: keyof Diagnosis, value: string) => {
@@ -133,16 +136,17 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
 
   return (
     <main>
-      <div className="p-4 pl-8 bg-white border-b border-black shadow-md">
-        <p className="text-xs text-m text-gray-500" >{current_date.toDateString()}</p>
-        <h1 className="text-3xl font-bold text-gray-800 mt-2">Diagnosa Pasien</h1> 
-
+      <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
+        <p className="text-m text-xs text-gray-500">
+          {current_date.toDateString()}
+        </p>
+        <h1 className="mt-2 text-3xl font-bold text-gray-800">
+          Diagnosa Pasien
+        </h1>
       </div>
       {informasiDasar && dokumenRekamMedis ? (
-        
-        
         <>
-          <div className="my-4 mx-4">
+          <div className="mx-4 my-4">
             {Object.entries(informasiDasar).map(([k, v]) => {
               return (
                 <div key={k}>
@@ -152,7 +156,7 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
               );
             })}
           </div>
-          
+
           <ul>
             {dokumenRekamMedis.map((dkm) => {
               return (
@@ -169,15 +173,13 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
       ) : null}
 
       {diagnosis ? (
-
         <>
-        <div>
-            <div className="grid grid-cols-2 gap-4 mx-4 my-4">
+          <div>
+            <div className="mx-4 my-4 grid grid-cols-2 gap-4">
               {DiagnosisFields.map((diagnosisField) => {
-                
                 return (
                   <Input
-                    className="border border-black rounded-xl mb-4 "
+                    className="mb-4 rounded-xl border border-black"
                     key={diagnosisField.field}
                     label={diagnosisField.displayText}
                     placeholder={diagnosisField.displayText}
@@ -189,24 +191,20 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
                   />
                 );
               })}
-
             </div>
             <Button
               as={Link}
-              className="bg-primary text-white ml-4 my-4"
+              className="my-4 ml-4 bg-primary text-white"
               href={`/riwayat-rekam-medis/${diagnosis.id_pasien}`}
             >
               Riwayat Rekam Medis
             </Button>
-
-        </div>
+          </div>
         </>
       ) : null}
       {/* {JSON.stringify(diagnosis)}; */}
-      <div className="flex justify-end mx-4">
-      <Button
-      onClick={handleSave}>Save</Button>
-
+      <div className="mx-4 flex justify-end">
+        <Button onClick={handleSave}>Save</Button>
       </div>
     </main>
   );

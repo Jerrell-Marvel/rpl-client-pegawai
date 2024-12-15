@@ -128,65 +128,89 @@ export default function DaftarOfflinePage() {
     console.log(selectedPasien);
   };
 
+  const current_date = new Date();
+
   return (
-    <div>
-      {pasien && dokter ? (
-        <>
-          <Select
-            className=""
-            label="Pasien"
-            placeholder="Select pasien"
-            selectedKeys={[selectedPasien]}
-            variant="bordered"
-            onChange={(e) => setSelectedPasien(e.target.value)}
-          >
-            {pasien.map((p) => {
-              return <SelectItem key={p.id_pasien}>{p.email}</SelectItem>;
-            })}
-          </Select>
+    <main>
+      <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
+        <p className="text-m text-xs text-gray-500">
+          {current_date.toDateString()}
+        </p>
+        <h1 className="mt-2 text-3xl font-bold text-gray-800">
+          Daftar Rawat Jalan Pasien
+        </h1>
+      </div>
+      <div className="flex flex-col gap-6 p-8">
+        {pasien && dokter ? (
+          <>
+            <Select
+              className=""
+              size="md"
+              label="Pasien"
+              placeholder="Select pasien"
+              selectedKeys={[selectedPasien]}
+              variant="bordered"
+              onChange={(e) => setSelectedPasien(e.target.value)}
+            >
+              {pasien.map((p) => {
+                return <SelectItem key={p.id_pasien}>{p.email}</SelectItem>;
+              })}
+            </Select>
 
-          <Select
-            className=""
-            label="Dokter"
-            placeholder="Pilih dokter"
-            selectedKeys={[selectedDokter]}
-            variant="bordered"
-            onChange={(e) => setSelectedDokter(e.target.value)}
-          >
-            {dokter.map((d) => {
-              return <SelectItem key={d.id_pegawai}>{d.nama}</SelectItem>;
-            })}
-          </Select>
-        </>
-      ) : null}
-
-      {jadwal ? (
-        <>
-          <h3 className="mt-6 font-bold">Pilih jadwal adik adik</h3>
-          <p className="text-lg font-semibold">{dayName.getTodayDay()}</p>
-          <div className="mt-6 grid grid-cols-7 gap-8">
-            {jadwal[dayName.getTodayDay().toLowerCase()].map((j) => {
-              return (
-                <div
-                  key={j.id_jadwal}
-                  className={`flex cursor-pointer justify-between gap-2 bg-slate-100 p-2 hover:bg-slate-200 ${selectedJadwal === j.id_jadwal ? "bg-slate-200" : ""}`}
-                  onClick={() => setSelectedJadwal(j.id_jadwal)}
-                >
-                  <div>
-                    <p>{j.no_ruang}</p>
-                    <p>
-                      {formatTime(j.start_time)} - {formatTime(j.end_time)}
-                    </p>
-                    <p>Kuota : {j.kuota}</p>
+            <Select
+              className=""
+              size="md"
+              label="Dokter"
+              placeholder="Pilih dokter"
+              selectedKeys={[selectedDokter]}
+              variant="bordered"
+              onChange={(e) => {
+                setSelectedJadwal(undefined);
+                setSelectedDokter(e.target.value);
+              }}
+            >
+              {dokter.map((d) => {
+                return <SelectItem key={d.id_pegawai}>{d.nama}</SelectItem>;
+              })}
+            </Select>
+          </>
+        ) : null}
+        {jadwal && jadwal[dayName.getTodayDay().toLowerCase()] ? (
+          <>
+            <h3 className="font-bold">Pilih jadwal praktik dokter</h3>
+            <p className="text-lg font-semibold">{dayName.getTodayDay()}</p>
+            <div className="grid grid-cols-7 gap-6">
+              {jadwal[dayName.getTodayDay().toLowerCase()].map((j) => {
+                return (
+                  <div
+                    key={j.id_jadwal}
+                    className={`flex cursor-pointer justify-between gap-2 rounded-lg border border-slate-300 p-2 ${selectedJadwal === j.id_jadwal ? "bg-primaryCol text-white" : "bg-slate-100 hover:bg-primaryCol hover:text-white"}`}
+                    onClick={() => setSelectedJadwal(j.id_jadwal)}
+                  >
+                    <div>
+                      <p>{j.no_ruang}</p>
+                      <p>
+                        {formatTime(j.start_time)} - {formatTime(j.end_time)}
+                      </p>
+                      <p>Kuota : {j.kuota}</p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </>
-      ) : null}
-
-      <Button onClick={() => handleSubmit()}>Submit</Button>
-    </div>
+                );
+              })}
+            </div>
+          </>
+        ) : selectedDokter ? (
+          <p>Tidak terdapat jadwal praktik untuk hari ini </p>
+        ) : null}
+        <Button
+          onClick={() => handleSubmit()}
+          type="submit"
+          isDisabled={!selectedJadwal}
+          className={`${!!selectedJadwal ? "bg-primaryCol text-white" : ""}`}
+        >
+          Submit
+        </Button>
+      </div>
+    </main>
   );
 }

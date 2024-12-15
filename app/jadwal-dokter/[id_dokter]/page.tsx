@@ -1,5 +1,7 @@
 "use client";
 
+import trash from '@/public/trash.png';
+import cross from '@/public/cross.png';
 import React, { useEffect, useState } from "react";
 import { Dokter, Jadwal } from "@/types/dokter";
 import {
@@ -172,29 +174,35 @@ function TambahJadwalDokterPage({ params }: { params: { id_dokter: string } }) {
           <div className="mt-6 grid grid-cols-7 gap-8">
             {jadwal &&
               hari.map((h) => (
-                <div key={h} className="flex flex-col gap-2 rounded-sm">
-                  <p className="text-lg font-semibold">{h}</p>
+                <div key={h} className="flex flex-col gap-2 rounded-sm overflow-y-auto max-h-96">
+                  <p className=" text-lg font-semibold">{h}</p>
+
                   {jadwal[h]?.map((j) => {
+
+
                     return (
                       <div
                         key={j.id_jadwal}
-                        className="flex justify-between gap-2 bg-slate-100 p-2"
+                        className="flex justify-between gap-2 bg-slate-100 p-2 rounded-lg shadow-md mb-3 "
                       >
                         <div>
-                          <p>{j.no_ruang}</p>
-                          <p>
+                          <p ><span className='font-bold'>Ruang:</span> {j.no_ruang}</p>
+                          <p><span className='font-bold'>Jam Praktik:</span>
+                            <br />
                             {formatTime(j.start_time)} -{" "}
                             {formatTime(j.end_time)}
                           </p>
-                          <p>Kuota : {j.kuota}</p>
+                          <p><span className='font-bold'>Kuota:</span> {j.kuota}</p>
                         </div>
 
                         <button
-                          className="h-4 w-4 bg-red-500"
+                          className="h-5 w-5 bg-red-500 flex justify-center items-center rounded-full"
                           onClick={() => {
                             handleDelete(h, j.id_jadwal);
                           }}
-                        ></button>
+                        >
+                          <img src={cross.src} alt="Delete Jadwal" className='h-2 w-2'/>
+                        </button>
                       </div>
                     );
                   })}
@@ -206,58 +214,68 @@ function TambahJadwalDokterPage({ params }: { params: { id_dokter: string } }) {
 
           <h3 className="mt-4 text-xl font-bold">Tambah Jadwal</h3>
 
-          <div className="mt-6 grid grid-cols-4 gap-4">
-            <Select
-              className=""
-              label="Hari"
-              placeholder="Select hari"
-              selectedKeys={[selectedHari]}
-              variant="bordered"
-              onChange={(e) => setSelectedHari(e.target.value)}
-            >
-              {hari.map((h) => (
-                <SelectItem key={h}>{h}</SelectItem>
-              ))}
-            </Select>
-            <TimeInput
-              label="Waktu Mulai"
-              value={startTime}
-              onChange={setStartTime}
-              granularity="minute"
-              hourCycle={24}
-              variant="bordered"
-            />
+          <div className="mt-6 grid grid-cols-2 gap-4">
 
-            <TimeInput
-              label="Waktu Selesai"
-              value={endTime}
-              onChange={setEndTime}
-              granularity="minute"
-              variant="bordered"
-              hourCycle={24}
-            />
+            <div >
+              <Select
+                className="mb-4"
+                label="Hari"
+                placeholder="Select hari"
+                selectedKeys={[selectedHari]}
+                variant="bordered"
+                onChange={(e) => setSelectedHari(e.target.value)}
+              >
+                {hari.map((h) => (
+                  <SelectItem key={h}>{h}</SelectItem>
+                ))}
+              </Select>
+              <Select
+                className="mb-4"
+                label="Ruang"
+                placeholder="Select ruang"
+                selectedKeys={[selectedRuang]}
+                variant="bordered"
+                onChange={(e) => setSelectedRuang(e.target.value)}
+              >
+                {ruang.map((r) => (
+                  <SelectItem key={r.id_ruang}>{r.no_ruang}</SelectItem>
+                ))}
+              </Select>
 
-            <Select
-              className=""
-              label="Ruang"
-              placeholder="Select ruang"
-              selectedKeys={[selectedRuang]}
-              variant="bordered"
-              onChange={(e) => setSelectedRuang(e.target.value)}
-            >
-              {ruang.map((r) => (
-                <SelectItem key={r.id_ruang}>{r.no_ruang}</SelectItem>
-              ))}
-            </Select>
+              <Input
+                className='mb-4'
+                label="Kuota"
+                placeholder="Masukkan kuota"
+                type="number"
+                value={kuota}
+                variant="bordered"
+                onValueChange={setKuota}
+              />
 
-            <Input
-              label="Kuota"
-              placeholder="Masukkan kuota"
-              type="number"
-              value={kuota}
-              variant="bordered"
-              onValueChange={setKuota}
-            />
+            </div>
+            <div className='pl-4 border-l border-gray-400'>
+                <TimeInput
+                  className='mb-4'
+                  label="Waktu Mulai"
+                  value={startTime}
+                  onChange={setStartTime}
+                  granularity="minute"
+                  hourCycle={24}
+                  variant="bordered"
+                />
+
+                <TimeInput
+                  className='mb-4'
+                  label="Waktu Selesai"
+                  value={endTime}
+                  onChange={setEndTime}
+                  granularity="minute"
+                  variant="bordered"
+                  hourCycle={24}
+                />
+
+            </div>
+
           </div>
 
           <div className="mt-4 flex justify-end">

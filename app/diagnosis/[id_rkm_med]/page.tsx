@@ -61,6 +61,7 @@ type DokumenRekamMedis = {
 };
 
 function DiagnosisPage({ params }: DiagnosisPageProps) {
+  const current_date =  new Date();
   //INFORMASI DASAR
   const [informasiDasar, setInformasiDasar] = useState<InformasiDasar | null>(
     null,
@@ -132,9 +133,16 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
 
   return (
     <main>
+      <div className="p-4 pl-8 bg-white border-b border-black shadow-md">
+        <p className="text-xs text-m text-gray-500" >{current_date.toDateString()}</p>
+        <h1 className="text-3xl font-bold text-gray-800 mt-2">Diagnosa Pasien</h1> 
+
+      </div>
       {informasiDasar && dokumenRekamMedis ? (
+        
+        
         <>
-          <div>
+          <div className="my-4 mx-4">
             {Object.entries(informasiDasar).map(([k, v]) => {
               return (
                 <div key={k}>
@@ -144,6 +152,7 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
               );
             })}
           </div>
+          
           <ul>
             {dokumenRekamMedis.map((dkm) => {
               return (
@@ -155,34 +164,50 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
               );
             })}
           </ul>
+          <div className="border-b border-gray-400" />
         </>
       ) : null}
+
       {diagnosis ? (
+
         <>
-          <Button
-            as={Link}
-            className="bg-primary text-white"
-            href={`/riwayat-rekam-medis/${diagnosis.id_pasien}`}
-          >
-            Riwayat Rekam Medis
-          </Button>
-          {DiagnosisFields.map((diagnosisField) => {
-            return (
-              <Input
-                key={diagnosisField.field}
-                label={diagnosisField.displayText}
-                placeholder={diagnosisField.displayText}
-                value={String(diagnosis[diagnosisField.field] || "")}
-                onChange={(e) => {
-                  handleChange(diagnosisField.field, e.target.value);
-                }}
-                min={0}
-              />
-            );
-          })}
+        <div>
+            <div className="grid grid-cols-2 gap-4 mx-4 my-4">
+              {DiagnosisFields.map((diagnosisField) => {
+                
+                return (
+                  <Input
+                    className="border border-black rounded-xl mb-4 "
+                    key={diagnosisField.field}
+                    label={diagnosisField.displayText}
+                    placeholder={diagnosisField.displayText}
+                    value={String(diagnosis[diagnosisField.field] || "")}
+                    onChange={(e) => {
+                      handleChange(diagnosisField.field, e.target.value);
+                    }}
+                    min={0}
+                  />
+                );
+              })}
+
+            </div>
+            <Button
+              as={Link}
+              className="bg-primary text-white ml-4 my-4"
+              href={`/riwayat-rekam-medis/${diagnosis.id_pasien}`}
+            >
+              Riwayat Rekam Medis
+            </Button>
+
+        </div>
         </>
       ) : null}
-      {JSON.stringify(diagnosis)};<Button onClick={handleSave}>Save</Button>
+      {/* {JSON.stringify(diagnosis)}; */}
+      <div className="flex justify-end mx-4">
+      <Button
+      onClick={handleSave}>Save</Button>
+
+      </div>
     </main>
   );
 }

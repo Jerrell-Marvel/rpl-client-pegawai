@@ -161,70 +161,106 @@ function InformasiDasarPage({ params }: InformasiDasarPageProps) {
       </div>
       <div className="flex flex-col gap-8 items-center bg-gray-50 py-4 px-4  max-h-[70rem]">
 
+          <div></div>
           {informasiDasar && dokumenRekamMedis ? (
             <>
-              {informasiDasarFields.map((informasiDasarField) => {
-                return (
-                  <Input
-                    className="border border-black rounded-xl"
-                    key={informasiDasarField.field}
-                    label={informasiDasarField.displayText}
-                    
-                    placeholder={informasiDasarField.displayText}
-                    value={String(informasiDasar[informasiDasarField.field] || "")}
-                    onChange={(e) => {
-                      handleChange(
-                        informasiDasarField.field,
-                        Number(e.target.value),
+            <div className="grid grid-cols-[300px_minmax(500px,_1fr)_100px] gap-4">
+              <div>
+                  {informasiDasarFields.map((informasiDasarField) => {
+                    let text;
+                    switch(informasiDasarField.field){
+                      case "tinggi_badan":
+                        text = `${informasiDasarField.displayText} (cm)`;
+                        break;
+                      case "berat_badan":
+                        text = `${informasiDasarField.displayText} (kg)`;
+                        break;
+                      case "diastolik":
+                      case "sistolik":
+                        text = `${informasiDasarField.displayText} (mmHg)`;
+                        break;
+                      case "denyut_nadi":
+                        text = `${informasiDasarField.displayText} (bpm)`;
+                        break;
+                    }
+
+                    return (
+                      
+                      <Input
+                        className="border border-black rounded-xl mb-4 "
+                        key={informasiDasarField.field}
+                        // label={`${informasiDasarField.displayText} (cm)`}
+                        label = {text}
+                        
+                        placeholder={informasiDasarField.displayText}
+                        value={String(informasiDasar[informasiDasarField.field] || "")}
+                        onChange={(e) => {
+                          handleChange(
+                            informasiDasarField.field,
+                            Number(e.target.value),
+                          );
+                        }}
+                        type="number"
+                        min={0}
+                      />
+                    );
+                  }
+                  
+                  )}
+
+                <Select
+                  className="bg-white"
+                  label="Golongan Darah"
+                  placeholder="Select Golongan Darah"
+                  selectedKeys={
+                    informasiDasar.golongan_darah
+                      ? [informasiDasar.golongan_darah]
+                      : []
+                  }
+                  variant="bordered"
+                  onChange={(e) => {
+                    handleChange("golongan_darah", e.target.value);
+                  }}
+                >
+                  {golonganDarahOption.map((golDarah) => (
+                    <SelectItem key={golDarah}>{golDarah}</SelectItem>
+                  ))}
+                </Select>
+              </div>
+              <div className="p-6 bg-stone-200 rounded-xl border border-black overflow-y-auto">
+                  <ul>
+                    {dokumenRekamMedis.map((dkm) => {
+                      return (
+                        <li key={dkm.id_dkm} className="flex gap-6">
+
+
+                          <Button onClick={() => downloadFile(dkm.path_file)}>
+                            {dkm.path_file}
+                          </Button>
+                          <Button
+                            className="mx-4 bg-red-600 text-white"
+                            onClick={() => handleDelete(dkm.id_dkm)}
+                          >
+                            Delete
+                          </Button>
+                        </li>
                       );
-                    }}
-                    type="number"
-                    min={0}
-                  />
-                );
-              })}
+                    })}
+                  </ul>
+                  <Input
+                  className="border border-black rounded-xl"
+                  type="file" multiple onChange={handleFileChange} />
 
-              <Select
-                className=""
-                label="Golongan Darah"
-                placeholder="Select Golongan Darah"
-                selectedKeys={
-                  informasiDasar.golongan_darah
-                    ? [informasiDasar.golongan_darah]
-                    : []
-                }
-                variant="bordered"
-                onChange={(e) => {
-                  handleChange("golongan_darah", e.target.value);
-                }}
-              >
-                {golonganDarahOption.map((golDarah) => (
-                  <SelectItem key={golDarah}>{golDarah}</SelectItem>
-                ))}
-              </Select>
+              </div>
 
-              <ul>
-                {dokumenRekamMedis.map((dkm) => {
-                  return (
-                    <li key={dkm.id_dkm} className="flex gap-6">
-                      <Button onClick={() => downloadFile(dkm.path_file)}>
-                        {dkm.path_file}
-                      </Button>
-                      <Button
-                        className="bg-red-600 text-white"
-                        onClick={() => handleDelete(dkm.id_dkm)}
-                      >
-                        Delete
-                      </Button>
-                    </li>
-                  );
-                })}
-              </ul>
 
-              <Input type="file" multiple onChange={handleFileChange} />
+            </div>
+
+
+
             </>
           ) : null}
-          {JSON.stringify(informasiDasar)};
+       
           <Button onClick={handleSave}>Save</Button>
       </div>
 

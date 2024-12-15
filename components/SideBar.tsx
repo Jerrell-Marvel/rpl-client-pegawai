@@ -47,7 +47,7 @@ export default function SideBar({ token }: SideBarProps) {
     <>
       <div className="fixed left-0 top-0 flex h-screen w-[20vw] flex-col justify-between bg-gray-200 pr-5">
         <div className="mt-4 space-x-4">
-          {allowedUrl.map((url) => {
+          {allowedUrl?.map((url) => {
             console.log(urlMapper[url]);
             return (
               <Link

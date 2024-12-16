@@ -137,71 +137,91 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
   return (
     <main>
       <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
-        <p className="text-m text-xs text-gray-500">
+        <p className=" text-xs text-gray-500">
           {current_date.toDateString()}
         </p>
         <h1 className="mt-2 text-3xl font-bold text-gray-800">
           Diagnosa Pasien
         </h1>
       </div>
-      {informasiDasar && dokumenRekamMedis ? (
-        <>
-          <div className="mx-4 my-4">
-            {Object.entries(informasiDasar).map(([k, v]) => {
-              return (
-                <div key={k}>
-                  <p>{k}</p>
-                  <p>{v}</p>
+
+      <div>
+        {informasiDasar && dokumenRekamMedis ? (
+          <>
+          <div className="flex flex-col p-4">
+              <div className="mx-4 my-4 font-bold bg-white h-min p-2 border border-black rounded-t-lg flex justify-center">
+               Informasi Dasar Pasien
                 </div>
-              );
-            })}
+               <div className="bg-white w-vw border border-gray-400 mx-4 rounded-b-lg">
+
+                  {Object.entries(informasiDasar).map(([k, v]) => {
+                    return (
+                      <div >
+                        <div 
+                        className="indent-4 py-2 "
+                        key={k}>
+                          <div className="flex items-center pl-4">
+                            <p className="rounded-full bg-black w-1.5 h-1"></p>
+                            <p >{k} : <b>{v}</b></p>
+
+                          </div>
+                        </div>
+
+                      </div>
+                    );
+                  })}
+              </div>
+
           </div>
 
-          <ul>
-            {dokumenRekamMedis.map((dkm) => {
-              return (
-                <li key={dkm.id_dkm} className="flex gap-6">
-                  <Button onClick={() => downloadFile(dkm.path_file)}>
-                    {dkm.path_file}
-                  </Button>
-                </li>
-              );
-            })}
-          </ul>
-          <div className="border-b border-gray-400" />
-        </>
-      ) : null}
-
-      {diagnosis ? (
-        <>
-          <div>
-            <div className="mx-4 my-4 grid grid-cols-2 gap-4">
-              {DiagnosisFields.map((diagnosisField) => {
+            <ul>
+              {dokumenRekamMedis.map((dkm) => {
                 return (
-                  <Input
-                    className="mb-4 rounded-xl border border-black"
-                    key={diagnosisField.field}
-                    label={diagnosisField.displayText}
-                    placeholder={diagnosisField.displayText}
-                    value={String(diagnosis[diagnosisField.field] || "")}
-                    onChange={(e) => {
-                      handleChange(diagnosisField.field, e.target.value);
-                    }}
-                    min={0}
-                  />
+                  <li key={dkm.id_dkm} className="flex gap-6">
+                    <Button onClick={() => downloadFile(dkm.path_file)}>
+                      {dkm.path_file}
+                    </Button>
+                  </li>
                 );
               })}
+            </ul>
+            <div className="border-b border-gray-400" />
+          </>
+        ) : null}
+
+        {diagnosis ? (
+          <>
+            <div>
+              <p className="p-4 flex justify-center font-bold text-lg bg-white border-t border-b border-black ">Diagnosis</p>
+              <div className="mx-4 my-4 grid grid-cols-2 gap-4">
+                {DiagnosisFields.map((diagnosisField) => {
+                  return (
+                    <Input
+                      className="mb-4 rounded-xl border border-black"
+                      key={diagnosisField.field}
+                      label={diagnosisField.displayText}
+                      placeholder={diagnosisField.displayText}
+                      value={String(diagnosis[diagnosisField.field] || "")}
+                      onChange={(e) => {
+                        handleChange(diagnosisField.field, e.target.value);
+                      }}
+                      min={0}
+                    />
+                  );
+                })}
+              </div>
+              <Button
+                as={Link}
+                className="my-4 ml-4 bg-primary text-white"
+                href={`/riwayat-rekam-medis/${diagnosis.id_pasien}`}
+              >
+                Riwayat Rekam Medis
+              </Button>
             </div>
-            <Button
-              as={Link}
-              className="my-4 ml-4 bg-primary text-white"
-              href={`/riwayat-rekam-medis/${diagnosis.id_pasien}`}
-            >
-              Riwayat Rekam Medis
-            </Button>
-          </div>
-        </>
-      ) : null}
+          </>
+        ) : null}
+
+      </div>
       {/* {JSON.stringify(diagnosis)}; */}
       <div className="mx-4 flex justify-end">
         <Button onClick={handleSave}>Save</Button>

@@ -33,6 +33,7 @@ type RekamMedis = {
 };
 
 function RiwayatRekamMedisPage({ params }: RiwayatRekammedisPageProps) {
+  const current_date = new Date();
   const [rekamMedis, setRekamMedis] = useState<RekamMedis[]>();
 
   useEffect(() => {

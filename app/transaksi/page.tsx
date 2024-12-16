@@ -82,27 +82,39 @@ function TransaksiPage() {
   };
 
   return (
-    <main>
+    <main className="min-h-full">
       <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
         <p className="text-m text-xs text-gray-500">
           {current_date.toDateString()}
         </p>
         <h1 className="mt-2 text-3xl font-bold text-gray-800">
-          Diagnosa Pasien
+          Transaksi
         </h1>
       </div>
       <div className="flex flex-col items-center gap-8 bg-gray-50 py-4">
         <ScrollShadow
           hideScrollBar
-          className="grid max-h-[740px] w-full max-w-[1200px] overflow-y-auto sm:grid-cols-1 lg:grid-cols-2"
-        >
+          className="grid max-h-[740px] w-full max-w-[1200px] overflow-y-auto sm:grid-cols-1 lg:grid-cols-2">
+
           {pendaftaran.map((p) => {
             return (
               <>
                 <div className="mx-[20px] my-[20px]">
                   <PemanggilanCard pemanggilan={p}>
-                    <span>{formatRupiah(p.biaya_kunjungan)}</span>
-                    <Button onClick={() => handleOpen(p)}></Button>
+
+                    <div className="flex justify-between pt-4">
+                    <span>Total Biaya:  
+                        <b className="pl-4 text-lg">
+                        {formatRupiah(p.biaya_kunjungan)}
+                        </b> 
+                      </span>
+
+                      <Button
+                      className="bg-primary text-white"
+                      onClick={() => handleOpen(p)}>
+                        Pilih Metode Bayar
+                      </Button>
+                    </div>
                   </PemanggilanCard>
                 </div>
               </>
@@ -116,15 +128,22 @@ function TransaksiPage() {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <p>{selectedPendaftaran!.nama_pasien}</p>
-                <p>{selectedPendaftaran!.nama_dokter}</p>
+                <div className="border-b border-gray-400 pb-4">
+                  <p>{selectedPendaftaran!.nama_pasien}</p>
+                  <p>Dokter : {selectedPendaftaran!.nama_dokter}</p>
 
-                <p>
-                  {selectedPendaftaran!.start_time} -{" "}
-                  {selectedPendaftaran!.end_time}
-                </p>
+                  <p>
+                    Jam : {selectedPendaftaran!.start_time} -{" "}
+                    {selectedPendaftaran!.end_time}
+                  </p>
 
-                <p>{formatRupiah(selectedPendaftaran!.biaya_kunjungan)}</p>
+                  <span>Total Biaya:  
+                    <b className="pl-4 text-lg">
+                    {formatRupiah(selectedPendaftaran!.biaya_kunjungan)}     
+                    </b> 
+                  </span>
+                </div>
+
               </ModalHeader>
               <ModalBody>
                 <RadioGroup

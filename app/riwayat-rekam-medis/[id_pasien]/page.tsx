@@ -48,64 +48,94 @@ function RiwayatRekamMedisPage({ params }: RiwayatRekammedisPageProps) {
     fetchData();
   }, []);
   return (
-    <div>
-      <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
-        <p className="text-m text-xs text-gray-500">
-          {current_date.toDateString()}
-        </p>
-        <h1 className="mt-2 text-3xl font-bold text-gray-800">
-          Riwayat Rekam Medis
-        </h1>
-      </div>
-
-      <div className="grid grid-cols-3 ">
-        <p className="flex justify-center bg-stone-200 font-bold py-2 blend hover:bg-stone-400">Pasien</p>
-        <p className="flex justify-center bg-stone-200 font-bold py-2 blend hover:bg-stone-400">Informasi Dasar</p>
-        <p  className="flex justify-center bg-stone-200 font-bold py-2 blend hover:bg-stone-400">Diagnosa Pasien</p>
-      </div>
-
+    <div className="flex flex-col gap-8 p-10">
+      <h1 className="text-4xl font-bold">Riwayat Rekam Medis</h1>
       {rekamMedis?.map((rkm) => {
         return (
-          <div>
-            <p className="border-b border-black border-dashed"></p>
-            <div key={rkm.id_rkm_med} className="grid grid-cols-3">
-              
-              <div className="flex flex-col gap-4 m-4 bg-white border border-black p-4 rounded-lg hover:scale-90 transition-transform ">
-                
-                <p>id_pendaftaran: {rkm.id_pendaftaran}</p>
-                <p>status: {rkm.status}</p>
-                <p>antrian: {rkm.antrian}</p>
-                <p>tanggal_daftar: {rkm.tanggal_daftar}</p>
-                <p>id_pasien: {rkm.id_pasien}</p>
-                <p>id_jadwal: {rkm.id_jadwal}</p>
+          <div
+            key={rkm.id_rkm_med}
+            className="grid grid-cols-2 rounded-lg bg-slate-200 p-6"
+          >
+            {/* Informasi dasar */}
+            <div>
+              <h3 className="text-2xl font-bold">Informasi Dasar</h3>
+              <p>
+                Tanggal :{" "}
+                <span className="font-semibold">
+                  {rkm.tanggal_daftar ?? "-"}
+                </span>
+              </p>
+              <p>
+                Tinggi Badan:{" "}
+                <span className="font-semibold">{rkm.tinggi_badan ?? "-"}</span>
+              </p>
+              <p>
+                Berat Badan:
+                <span className="font-semibold">{rkm.berat_badan ?? "-"}</span>
+              </p>
+              <p>
+                Golongan Darah:{" "}
+                <span className="font-semibold">
+                  {rkm.golongan_darah ?? "-"}
+                </span>
+              </p>
+              <p>
+                diastolik:{" "}
+                <span className="font-semibold">{rkm.diastolik ?? "-"}</span>
+              </p>
+              <p>
+                sistolik:{" "}
+                <span className="font-semibold">{rkm.sistolik ?? "-"}</span>
+              </p>
+              <p>
+                Denyut Nadi:{" "}
+                <span className="font-semibold">{rkm.denyut_nadi ?? "-"}</span>
+              </p>
+            </div>
+            {/* Tampilin seperlunya aja nanti*/}
 
-              </div>
-              {/* Tampilin seperlunya aja nanti*/}
-              
-              <div className="flex flex-col gap-4 m-4 bg-white border border-black p-4 rounded-lg hover:scale-90 transition-transform ">
-                <p>tinggi_badan: {rkm.tinggi_badan ?? "-"}</p>
-                <p>berat_badan: {rkm.berat_badan ?? "-"}</p>
-                <p>golongan_darah: {rkm.golongan_darah ?? "-"}</p>
-                <p>diastolik: {rkm.diastolik ?? "-"}</p>
-                <p>sistolik: {rkm.sistolik ?? "-"}</p>
-                <p>denyut_nadi: {rkm.denyut_nadi ?? "-"}</p>
-              </div>
-              
-              <div className="flex flex-col gap-4 m-4 bg-white border border-black p-4 rounded-lg hover:scale-90 transition-transform ">
-                <p>id_rkm_med: {rkm.id_rkm_med}</p>
-                <p>resep_obat: {rkm.resep_obat ?? "-"}</p>
-                <p>
-                  prognosis_tindakan_lanjut: {rkm.prognosis_tindakan_lanjut ?? "-"}
-                </p>
-                <p>diag_penunjang: {rkm.diag_penunjang ?? "-"}</p>
-                <p>pemeriksaan_fisik: {rkm.pemeriksaan_fisik ?? "-"}</p>
-                <p>pemeriksaan_penunjang: {rkm.pemeriksaan_penunjang ?? "-"}</p>
-                <p>riwayat_penyakit: {rkm.riwayat_penyakit ?? "-"}</p>
-                <p>keluhan: {rkm.keluhan ?? "-"}</p>
-
-              </div>
-
-              </div>
+            {/* Diagnosis */}
+            <div>
+              <h3 className="text-2xl font-bold">Diagnosis</h3>
+              <p>
+                Resep Obat:{" "}
+                <span className="font-semibold">{rkm.resep_obat ?? "-"}</span>
+              </p>
+              <p>
+                Prognosis Tindakan Lanjut:{" "}
+                <span className="font-semibold">
+                  {rkm.prognosis_tindakan_lanjut ?? "-"}
+                </span>
+              </p>
+              <p>
+                Diag Penunjang:{" "}
+                <span className="font-semibold">
+                  {rkm.diag_penunjang ?? "-"}
+                </span>
+              </p>
+              <p>
+                Pemeriksaan Fisik:{" "}
+                <span className="font-semibold">
+                  {rkm.pemeriksaan_fisik ?? "-"}
+                </span>
+              </p>
+              <p>
+                Pemeriksaan Penunjang:{" "}
+                <span className="font-semibold">
+                  {rkm.pemeriksaan_penunjang ?? "-"}{" "}
+                </span>
+              </p>
+              <p>
+                Riwayat Penyakit:{" "}
+                <span className="font-semibold">
+                  {rkm.riwayat_penyakit ?? "-"}{" "}
+                </span>
+              </p>
+              <p>
+                Keluhan:{" "}
+                <span className="font-semibold">{rkm.keluhan ?? "-"}</span>
+              </p>
+            </div>
           </div>
         );
       })}

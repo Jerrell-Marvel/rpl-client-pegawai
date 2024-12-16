@@ -20,6 +20,7 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { AxiosInstance } from "@/utils/axiosInstance";
 import { z } from "zod";
+import { toast } from "react-toastify";
 
 // Zod Schema
 const RegistrationSchema = z
@@ -41,16 +42,7 @@ const RegistrationSchema = z
         message: "Password harus mengandung huruf dan angka",
       }),
     confirm_password: z.string(),
-    jenis_kelamin: z.enum(["laki", "perempuan"], {
-      errorMap: () => ({ message: "Pilih jenis kelamin yang valid" }),
-    }),
-    tanggal_lahir: z.string().refine(
-      (val) => {
-        const date = new Date(val);
-        return !isNaN(date.getTime());
-      },
-      { message: "Tanggal lahir tidak valid" },
-    ),
+    role: z.string(),
     id_kecamatan: z
       .number()
       .int()
@@ -66,6 +58,11 @@ const RegistrationSchema = z
   });
 
 type RegistrationFormData = z.infer<typeof RegistrationSchema>;
+
+type RoleType = {
+  id_role: number;
+  nama_role: string;
+};
 
 type KecamatanType = {
   id_kecamatan: number;
@@ -88,6 +85,7 @@ export default function SigninPage() {
     formState: { errors },
     watch,
     control,
+    reset,
   } = useForm<RegistrationFormData>({
     resolver: zodResolver(RegistrationSchema),
     mode: "onChange",
@@ -106,6 +104,7 @@ export default function SigninPage() {
       id_kelurahan: Number(formData.id_kelurahan),
     };
 
+    console.log(finalFormData);
     try {
       setIsSubmiting(true);
 
@@ -115,7 +114,9 @@ export default function SigninPage() {
       )
         .then((response) => {
           if (response.status === 200) {
-            router.push("/masuk");
+            toast.success("Berhasil menambahkan pegawai!");
+            reset();
+            setErrorSubmit("");
           }
         })
         .catch((err) => {
@@ -143,8 +144,6 @@ export default function SigninPage() {
   const [kelurahanList, setKelurahanList] = useState<KelurahanType[]>([]);
 
   //roles
-  const [selectedRole, setSelectedRole] = useState("");
-
   const currentKecamatan = watch("id_kecamatan");
 
   useEffect(() => {
@@ -187,7 +186,7 @@ export default function SigninPage() {
   return (
     <>
       <section className="flex min-h-screen justify-center p-10">
-        <div className="flex w-1/2 flex-col items-center justify-evenly gap-10">
+        <div className="flex flex-col items-center justify-evenly">
           {/* <Image src={LogoVida} alt="Logo Vida" className="h[40%] w-[40%]" /> */}
           <h2 className="text-3xl font-semibold text-primaryCol">
             Daftar Akun
@@ -196,7 +195,7 @@ export default function SigninPage() {
           <div className="h-auto w-full px-10">
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="mb-4 flex flex-col gap-y-4 rounded-md bg-white p-6"
+              className="mb-4 flex flex-col gap-y-4 rounded-2xl bg-white px-10 py-10"
             >
               <div className="grid grid-cols-1 gap-4 text-base lg:grid-cols-2">
                 <h5 className="col-span-2 text-center text-red-700">
@@ -283,28 +282,32 @@ export default function SigninPage() {
                   variant="bordered"
                 />
 
-                {/* Tanggal Lahir */}
-
+                {/* Role */}
                 <Controller
-                  name="tanggal_lahir"
+                  name="role"
                   control={control}
                   render={({ field }) => (
-                    <DateInput
-                      label="Tanggal Lahir"
+                    <Select
+                      {...field}
+                      errorMessage={errors.role?.message}
+                      isInvalid={!!errors.role}
+                      label="Pilih Role"
                       variant="bordered"
-                      errorMessage={errors.tanggal_lahir?.message}
-                      isInvalid={!!errors.tanggal_lahir}
-                      onChange={(date) => {
-                        if (date) {
-                          const year = date.year;
-                          let month = "0" + date.month;
-                          let day = "0" + date.day;
-                          month = month.substring(month.length - 2);
-                          day = day.substring(day.length - 2);
-                          field.onChange(`${year}-${month}-${day}`);
-                        }
+                      placeholder="Pilih Role"
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
                       }}
-                    />
+                    >
+                      <SelectItem key="dokter" value="dokter">
+                        Dokter
+                      </SelectItem>
+                      <SelectItem key="pet-admin" value="pet-admin">
+                        Petugas Administrasi
+                      </SelectItem>
+                      <SelectItem key="perawat" value="perawat">
+                        Perawat
+                      </SelectItem>
+                    </Select>
                   )}
                 />
 
@@ -367,26 +370,6 @@ export default function SigninPage() {
                         </SelectItem>
                       )}
                     </Select>
-                  )}
-                />
-
-                {/* Jenis Kelamin */}
-                <Controller
-                  name="jenis_kelamin"
-                  control={control}
-                  render={({ field }) => (
-                    <RadioGroup
-                      errorMessage={errors.jenis_kelamin?.message}
-                      isInvalid={!!errors.jenis_kelamin}
-                      label="Jenis Kelamin"
-                      size="sm"
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                      }}
-                    >
-                      <Radio value="perempuan">Perempuan</Radio>
-                      <Radio value="laki">Laki-laki</Radio>
-                    </RadioGroup>
                   )}
                 />
               </div>

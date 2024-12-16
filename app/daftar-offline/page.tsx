@@ -116,8 +116,6 @@ export default function DaftarOfflinePage() {
     }
   }, [selectedDokter]);
 
-  
-
   const handleSubmit = async () => {
     if (selectedPasien && selectedJadwal) {
       const { data } = await AxiosInstance.post(
@@ -160,15 +158,13 @@ export default function DaftarOfflinePage() {
         </h1>
       </div>
 
-      <div className="m-4 pd-4 bg-gray-100 rounded-lg border border-black">
-
+      <div className="pd-4 m-4 rounded-lg border border-black bg-gray-100">
         <div className="flex flex-col gap-6 p-8">
           {pasien && dokter ? (
             <>
-            <div className="grid grid-cols-2 gap-4">
-              
+              <div className="grid grid-cols-2 gap-4">
                 <Select
-                  className="bg-white font-bold rounded-lg"
+                  className="rounded-lg bg-white font-bold"
                   size="md"
                   label="Pasien"
                   placeholder="Select pasien"
@@ -182,7 +178,7 @@ export default function DaftarOfflinePage() {
                 </Select>
 
                 <Select
-                  className="bg-white font-bold rounded-lg"
+                  className="rounded-lg bg-white font-bold"
                   size="md"
                   label="Dokter"
                   placeholder="Pilih dokter"
@@ -197,19 +193,19 @@ export default function DaftarOfflinePage() {
                     return <SelectItem key={d.id_pegawai}>{d.nama}</SelectItem>;
                   })}
                 </Select>
-            </div>
+              </div>
             </>
           ) : null}
           {jadwal && jadwal[dayName.getTodayDay().toLowerCase()] ? (
             <>
-              <h3 className="font-bold text-xl">Pilih jadwal praktik dokter</h3>
+              <h3 className="text-xl font-bold">Pilih jadwal praktik dokter</h3>
               <p className="text-xl font-semibold">{dayName.getTodayDay()}</p>
               <div className="grid grid-cols-7 gap-6">
                 {jadwal[dayName.getTodayDay().toLowerCase()].map((j) => {
                   return (
                     <div
                       key={j.id_jadwal}
-                      className={`flex justify-between gap-2 rounded-lg border border-slate-300 transition-all bg-white p-2 ${selectedJadwal === j.id_jadwal ? "bg-primaryCol text-primaryCol font-bold" : j.sisa_kuota > 0 ? "cursor-pointer bg-slate-100 hover:bg-primaryCol hover:text-white" : "cursor-default bg-slate-300"}`}
+                      className={`flex justify-between gap-2 rounded-lg border border-slate-300 p-2 transition-all ${selectedJadwal === j.id_jadwal ? "bg-primaryCol font-bold text-white" : j.sisa_kuota > 0 ? "cursor-pointer bg-white hover:bg-primaryCol hover:text-white" : "cursor-default bg-slate-300"}`}
                       onClick={() => {
                         setSisaKuota(j.sisa_kuota);
                         setSelectedJadwal(j.id_jadwal);
@@ -217,8 +213,9 @@ export default function DaftarOfflinePage() {
                     >
                       <div>
                         <p>Ruang : {j.no_ruang}</p>
-                        <p>Jam : 
-                          {formatTime(j.start_time)} - {formatTime(j.end_time)}
+                        <p>
+                          Jam :{formatTime(j.start_time)} -{" "}
+                          {formatTime(j.end_time)}
                         </p>
                         <p>Sisa Kuota : {j.sisa_kuota}</p>
                       </div>

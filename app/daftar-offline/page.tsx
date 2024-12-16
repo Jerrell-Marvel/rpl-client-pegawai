@@ -116,6 +116,8 @@ export default function DaftarOfflinePage() {
     }
   }, [selectedDokter]);
 
+  
+
   const handleSubmit = async () => {
     if (selectedPasien && selectedJadwal) {
       const { data } = await AxiosInstance.post(
@@ -157,79 +159,86 @@ export default function DaftarOfflinePage() {
           Daftar Rawat Jalan Pasien
         </h1>
       </div>
-      <div className="flex flex-col gap-6 p-8">
-        {pasien && dokter ? (
-          <>
-            <Select
-              className=""
-              size="md"
-              label="Pasien"
-              placeholder="Select pasien"
-              selectedKeys={[selectedPasien]}
-              variant="bordered"
-              onChange={(e) => setSelectedPasien(e.target.value)}
-            >
-              {pasien.map((p) => {
-                return <SelectItem key={p.id_pasien}>{p.email}</SelectItem>;
-              })}
-            </Select>
 
-            <Select
-              className=""
-              size="md"
-              label="Dokter"
-              placeholder="Pilih dokter"
-              selectedKeys={[selectedDokter]}
-              variant="bordered"
-              onChange={(e) => {
-                setSelectedJadwal(undefined);
-                setSelectedDokter(e.target.value);
-              }}
-            >
-              {dokter.map((d) => {
-                return <SelectItem key={d.id_pegawai}>{d.nama}</SelectItem>;
-              })}
-            </Select>
-          </>
-        ) : null}
-        {jadwal && jadwal[dayName.getTodayDay().toLowerCase()] ? (
-          <>
-            <h3 className="font-bold">Pilih jadwal praktik dokter</h3>
-            <p className="text-lg font-semibold">{dayName.getTodayDay()}</p>
-            <div className="grid grid-cols-7 gap-6">
-              {jadwal[dayName.getTodayDay().toLowerCase()].map((j) => {
-                return (
-                  <div
-                    key={j.id_jadwal}
-                    className={`flex justify-between gap-2 rounded-lg border border-slate-300 p-2 ${selectedJadwal === j.id_jadwal ? "bg-primaryCol text-white" : j.sisa_kuota > 0 ? "cursor-pointer bg-slate-100 hover:bg-primaryCol hover:text-white" : "cursor-default bg-slate-300"}`}
-                    onClick={() => {
-                      setSisaKuota(j.sisa_kuota);
-                      setSelectedJadwal(j.id_jadwal);
-                    }}
-                  >
-                    <div>
-                      <p>{j.no_ruang}</p>
-                      <p>
-                        {formatTime(j.start_time)} - {formatTime(j.end_time)}
-                      </p>
-                      <p>Sisa Kuota : {j.sisa_kuota}</p>
-                    </div>
-                  </div>
-                );
-              })}
+      <div className="m-4 pd-4 bg-gray-100 rounded-lg border border-black">
+
+        <div className="flex flex-col gap-6 p-8">
+          {pasien && dokter ? (
+            <>
+            <div className="grid grid-cols-2 gap-4">
+              
+                <Select
+                  className="bg-white font-bold rounded-lg"
+                  size="md"
+                  label="Pasien"
+                  placeholder="Select pasien"
+                  selectedKeys={[selectedPasien]}
+                  variant="bordered"
+                  onChange={(e) => setSelectedPasien(e.target.value)}
+                >
+                  {pasien.map((p) => {
+                    return <SelectItem key={p.id_pasien}>{p.email}</SelectItem>;
+                  })}
+                </Select>
+
+                <Select
+                  className="bg-white font-bold rounded-lg"
+                  size="md"
+                  label="Dokter"
+                  placeholder="Pilih dokter"
+                  selectedKeys={[selectedDokter]}
+                  variant="bordered"
+                  onChange={(e) => {
+                    setSelectedJadwal(undefined);
+                    setSelectedDokter(e.target.value);
+                  }}
+                >
+                  {dokter.map((d) => {
+                    return <SelectItem key={d.id_pegawai}>{d.nama}</SelectItem>;
+                  })}
+                </Select>
             </div>
-          </>
-        ) : selectedDokter ? (
-          <p>Tidak terdapat jadwal praktik untuk hari ini </p>
-        ) : null}
-        <Button
-          onClick={() => handleSubmit()}
-          type="submit"
-          isDisabled={!selectedJadwal || sisaKuota <= 0}
-          className={`${!!selectedJadwal && sisaKuota > 0 ? "bg-primaryCol text-white" : ""}`}
-        >
-          Submit
-        </Button>
+            </>
+          ) : null}
+          {jadwal && jadwal[dayName.getTodayDay().toLowerCase()] ? (
+            <>
+              <h3 className="font-bold text-xl">Pilih jadwal praktik dokter</h3>
+              <p className="text-xl font-semibold">{dayName.getTodayDay()}</p>
+              <div className="grid grid-cols-7 gap-6">
+                {jadwal[dayName.getTodayDay().toLowerCase()].map((j) => {
+                  return (
+                    <div
+                      key={j.id_jadwal}
+                      className={`flex justify-between gap-2 rounded-lg border border-slate-300 transition-all bg-white p-2 ${selectedJadwal === j.id_jadwal ? "bg-primaryCol text-primaryCol font-bold" : j.sisa_kuota > 0 ? "cursor-pointer bg-slate-100 hover:bg-primaryCol hover:text-white" : "cursor-default bg-slate-300"}`}
+                      onClick={() => {
+                        setSisaKuota(j.sisa_kuota);
+                        setSelectedJadwal(j.id_jadwal);
+                      }}
+                    >
+                      <div>
+                        <p>Ruang : {j.no_ruang}</p>
+                        <p>Jam : 
+                          {formatTime(j.start_time)} - {formatTime(j.end_time)}
+                        </p>
+                        <p>Sisa Kuota : {j.sisa_kuota}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : selectedDokter ? (
+            <p>Tidak terdapat jadwal praktik untuk hari ini </p>
+          ) : null}
+          <Button
+            onClick={() => handleSubmit()}
+            type="submit"
+            isDisabled={!selectedJadwal || sisaKuota <= 0}
+            className={`${!!selectedJadwal && sisaKuota > 0 ? "bg-primaryCol text-white" : ""}`}
+          >
+            Submit
+          </Button>
+        </div>
       </div>
     </main>
   );

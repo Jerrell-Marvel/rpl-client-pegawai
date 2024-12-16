@@ -125,6 +125,7 @@ export default function DaftarOfflinePage() {
           id_jadwal: selectedJadwal,
         },
       );
+      toast.success("Berhasil didaftarkan");
 
       const fetchData = async () => {
         const { data } = await AxiosInstance.get<JadwalPraktikResponse>(
@@ -139,8 +140,6 @@ export default function DaftarOfflinePage() {
 
       fetchData();
       setSelectedJadwal(undefined);
-
-      toast.success("Berhasil didaftarkan");
     }
     console.log(selectedPasien);
   };

@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { AxiosInstance } from "@/utils/axiosInstance";
 import { z } from "zod";
 import { toast } from "react-toastify";
+import { SpesialisasiType } from "@/types/spesialisasi";
 
 // Zod Schema
 const RegistrationSchema = z
@@ -51,10 +52,32 @@ const RegistrationSchema = z
       .number()
       .int()
       .positive({ message: "ID Kelurahan harus bilangan bulat positif" }),
+    id_spesialisasi: z
+      .number()
+      .int()
+      .positive({
+        message: "Biaya kunjungan dokter harus bilangan bulat positif",
+      })
+      .optional(),
+    biaya_kunjungan: z
+      .number()
+      .int()
+      .positive({
+        message: "Biaya kunjungan dokter harus bilangan bulat positif",
+      })
+      .optional(),
   })
   .refine((data) => data.password === data.confirm_password, {
     message: "Password tidak cocok",
     path: ["confirm_password"],
+  })
+  .refine((data) => data.role !== "dokter" || data.biaya_kunjungan, {
+    message: "Dokter harus memiliki biaya kunjungan",
+    path: ["biaya_kunjungan"],
+  })
+  .refine((data) => data.role !== "dokter" || data.id_spesialisasi, {
+    message: "Dokter harus memiliki id_spesialisasi",
+    path: ["id_spesialisasi"],
   });
 
 type RegistrationFormData = z.infer<typeof RegistrationSchema>;
@@ -107,11 +130,14 @@ export default function SigninPage() {
     console.log(finalFormData);
     try {
       setIsSubmiting(true);
+      let urlSubmit = `http://localhost:5000/api/pegawai/register`;
 
-      await AxiosInstance.post(
-        "http://localhost:5000/api/pegawai/register",
-        finalFormData,
-      )
+      if (selectedRole === "dokter") {
+        urlSubmit += "/dokter";
+      }
+
+      console.log(urlSubmit);
+      await AxiosInstance.post(urlSubmit, finalFormData)
         .then((response) => {
           if (response.status === 200) {
             toast.success("Berhasil menambahkan pegawai!");
@@ -143,16 +169,26 @@ export default function SigninPage() {
 
   const [kelurahanList, setKelurahanList] = useState<KelurahanType[]>([]);
 
+  // Id_Spesialisasi
+  const [spesialisasiList, setSpesialisasiList] = useState<SpesialisasiType[]>(
+    [],
+  );
+
   //roles
+  const selectedRole = watch("role");
   const currentKecamatan = watch("id_kecamatan");
 
   useEffect(() => {
     const fetchKecamatan = async () => {
       try {
-        const response = await AxiosInstance.get(
+        const kecamatanResp = await AxiosInstance.get(
           "http://localhost:5000/api/kecamatan",
         );
-        setKecamatanList(response.data);
+        setKecamatanList(kecamatanResp.data);
+        const spesialisasiResp = await AxiosInstance.get(
+          "http://localhost:5000/api/spesialisasi",
+        );
+        setSpesialisasiList(spesialisasiResp.data);
       } catch (error) {
         const err = error as AxiosError;
         console.error(err.message);
@@ -372,6 +408,63 @@ export default function SigninPage() {
                     </Select>
                   )}
                 />
+
+                {/* Spesialisasi */}
+                {selectedRole === "dokter" && (
+                  <Controller
+                    name="id_spesialisasi"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        items={spesialisasiList}
+                        errorMessage={errors.id_spesialisasi?.message}
+                        isInvalid={!!errors.id_spesialisasi}
+                        label="Pilih Spesialisasi Dokter"
+                        variant="bordered"
+                        placeholder="Pilih Spesialisasi Dokter"
+                        onChange={(e) => {
+                          field.onChange(
+                            e.target.value ? Number(e.target.value) : undefined,
+                          );
+                        }}
+                      >
+                        {(kecamatan) => (
+                          <SelectItem
+                            key={kecamatan.id_spesialisasi}
+                            value={kecamatan.id_spesialisasi}
+                          >
+                            {kecamatan.nama_spesialisasi}
+                          </SelectItem>
+                        )}
+                      </Select>
+                    )}
+                  />
+                )}
+
+                {/* Biaya Kunjungan */}
+
+                {selectedRole === "dokter" && (
+                  <Controller
+                    name="biaya_kunjungan"
+                    control={control}
+                    render={({ field }) => (
+                      // @ts-expect-error{ }
+                      <Input
+                        {...field}
+                        type="number"
+                        errorMessage={errors.biaya_kunjungan?.message}
+                        isInvalid={!!errors.biaya_kunjungan}
+                        label="Biaya Kunjungan Dokter"
+                        placeholder="200000"
+                        variant="bordered"
+                        onChange={(e) => {
+                          field.onChange(Number(e.target.value));
+                        }}
+                      />
+                    )}
+                  />
+                )}
               </div>
               <div>
                 <button

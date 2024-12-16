@@ -96,17 +96,20 @@ export default function DaftarOfflinePage() {
     fetchData();
   }, []);
 
+  const [sisaKuota, setSisaKuota] = useState<number>(0);
+
   useEffect(() => {
     if (selectedDokter) {
       console.log("here");
       const fetchData = async () => {
         const { data } = await AxiosInstance.get<JadwalPraktikResponse>(
-          `http://localhost:5000/api/jadwal-praktik/${selectedDokter}`,
+          `http://localhost:5000/api/jadwal-praktik/${selectedDokter}?day=today`,
         );
 
         const { jadwal_praktik, ...dokterData } = data;
         const groupedJadwal = groupAndSortJadwal(jadwal_praktik);
         setJadwal(groupedJadwal);
+        console.log(groupedJadwal);
       };
 
       fetchData();
@@ -122,6 +125,20 @@ export default function DaftarOfflinePage() {
           id_jadwal: selectedJadwal,
         },
       );
+
+      const fetchData = async () => {
+        const { data } = await AxiosInstance.get<JadwalPraktikResponse>(
+          `http://localhost:5000/api/jadwal-praktik/${selectedDokter}?day=today`,
+        );
+
+        const { jadwal_praktik, ...dokterData } = data;
+        const groupedJadwal = groupAndSortJadwal(jadwal_praktik);
+        setJadwal(groupedJadwal);
+        console.log(groupedJadwal);
+      };
+
+      fetchData();
+      setSelectedJadwal(undefined);
 
       toast.success("Berhasil didaftarkan");
     }
@@ -184,15 +201,18 @@ export default function DaftarOfflinePage() {
                 return (
                   <div
                     key={j.id_jadwal}
-                    className={`flex cursor-pointer justify-between gap-2 rounded-lg border border-slate-300 p-2 ${selectedJadwal === j.id_jadwal ? "bg-primaryCol text-white" : "bg-slate-100 hover:bg-primaryCol hover:text-white"}`}
-                    onClick={() => setSelectedJadwal(j.id_jadwal)}
+                    className={`flex justify-between gap-2 rounded-lg border border-slate-300 p-2 ${selectedJadwal === j.id_jadwal ? "bg-primaryCol text-white" : j.sisa_kuota > 0 ? "cursor-pointer bg-slate-100 hover:bg-primaryCol hover:text-white" : "cursor-default bg-slate-300"}`}
+                    onClick={() => {
+                      setSisaKuota(j.sisa_kuota);
+                      setSelectedJadwal(j.id_jadwal);
+                    }}
                   >
                     <div>
                       <p>{j.no_ruang}</p>
                       <p>
                         {formatTime(j.start_time)} - {formatTime(j.end_time)}
                       </p>
-                      <p>Kuota : {j.kuota}</p>
+                      <p>Sisa Kuota : {j.sisa_kuota}</p>
                     </div>
                   </div>
                 );
@@ -205,8 +225,8 @@ export default function DaftarOfflinePage() {
         <Button
           onClick={() => handleSubmit()}
           type="submit"
-          isDisabled={!selectedJadwal}
-          className={`${!!selectedJadwal ? "bg-primaryCol text-white" : ""}`}
+          isDisabled={!selectedJadwal || sisaKuota <= 0}
+          className={`${!!selectedJadwal && sisaKuota > 0 ? "bg-primaryCol text-white" : ""}`}
         >
           Submit
         </Button>

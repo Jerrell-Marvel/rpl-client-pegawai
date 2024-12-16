@@ -9,7 +9,7 @@ export type Pendaftaran = {
   end_time: string;
 };
 
-export type Pemanggilan = {
+export type PendaftaranWithAntrian = {
   antrian: number;
   id_rkm_med: number;
 } & Pendaftaran;

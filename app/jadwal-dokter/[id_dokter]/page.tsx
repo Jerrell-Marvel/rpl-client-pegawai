@@ -119,6 +119,7 @@ function TambahJadwalDokterPage({ params }: { params: { id_dokter: string } }) {
           id_ruang: Number(selectedRuang),
           is_active: true,
           no_ruang: noRuang,
+          sisa_kuota: 0
         });
         // sort ulang
         sortJadwal(newJadwalHari);

@@ -24,4 +24,5 @@ export type Jadwal = {
   id_ruang: number;
   is_active: boolean;
   no_ruang: string;
+  sisa_kuota: number;
 };

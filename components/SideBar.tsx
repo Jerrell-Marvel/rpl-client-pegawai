@@ -37,18 +37,18 @@ const urlMapper: { [key: string]: { svgPath: string; displayText: string } } = {
       "M185-80q-17 0-29.5-12.5T143-122v-105q0-90 56-159t144-88q-40 28-62 70.5T259-312v190q0 11 3 22t10 20h-87Zm147 0q-17 0-29.5-12.5T290-122v-190q0-70 49.5-119T459-480h189q70 0 119 49t49 119v64q0 70-49 119T648-80H332Zm148-484q-66 0-112-46t-46-112q0-66 46-112t112-46q66 0 112 46t46 112q0 66-46 112t-112 46Z",
     displayText: "Daftar Offline",
   },
+  "daftar-pegawai": {
+    svgPath:
+      "M185-80q-17 0-29.5-12.5T143-122v-105q0-90 56-159t144-88q-40 28-62 70.5T259-312v190q0 11 3 22t10 20h-87Zm147 0q-17 0-29.5-12.5T290-122v-190q0-70 49.5-119T459-480h189q70 0 119 49t49 119v64q0 70-49 119T648-80H332Zm148-484q-66 0-112-46t-46-112q0-66 46-112t112-46q66 0 112 46t46 112q0 66-46 112t-112 46Z",
+    displayText: "Daftar Pegawai",
+  },
 };
 
 const allowedUrlAccessMapper: { [key: string]: string[] } = {
   perawat: ["pemanggilan", "menunggu-dokter", "dalam-dokter"],
   dokter: ["dalam-dokter"],
   "pet-admin": ["daftar-ulang", "daftar-offline"],
-  "sis-admin": [
-    "daftar-ulang",
-    "pemanggilan",
-    "menunggu-dokter",
-    "dalam-dokter",
-  ],
+  "sis-admin": ["daftar-pegawai"],
 };
 
 export default function SideBar({ token }: SideBarProps) {

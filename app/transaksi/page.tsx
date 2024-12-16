@@ -133,7 +133,11 @@ function TransaksiPage() {
                   onValueChange={setSelectedMetode}
                 >
                   {metodePembayaran.map((mp) => {
-                    return <Radio value={mp}>{mp}</Radio>;
+                    return (
+                      <Radio value={mp} key={mp}>
+                        {mp}
+                      </Radio>
+                    );
                   })}
                 </RadioGroup>
               </ModalBody>

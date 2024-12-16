@@ -54,7 +54,7 @@ function PemanggilanPage() {
   const { role }: TokenType = jwtDecode(token);
 
   return (
-    <main className="m-0 flex max-h-screen flex-col gap-8 overflow-y-auto p-12">
+    <main className="m-0 flex max-h-screen flex-col gap-8 overflow-y-auto">
       <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
         <p className="text-m text-xs text-gray-500">
           {current_date.toDateString()}

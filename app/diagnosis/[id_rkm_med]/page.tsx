@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Button, Input, Link, Select, SelectItem } from "@nextui-org/react";
 import { AxiosInstance } from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 
 type DiagnosisPageProps = {
   params: {
@@ -62,6 +64,9 @@ type DokumenRekamMedis = {
 };
 
 function DiagnosisPage({ params }: DiagnosisPageProps) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const current_date = new Date();
   //INFORMASI DASAR
   const [informasiDasar, setInformasiDasar] = useState<InformasiDasar | null>(
@@ -76,21 +81,29 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: diagnosisData } = await AxiosInstance.get<Diagnosis>(
-        `http://localhost:5000/api/rekam-medis/diagnosis/${params.id_rkm_med}`,
-      );
+      try {
+        const { data: diagnosisData } = await AxiosInstance.get<Diagnosis>(
+          `http://localhost:5000/api/rekam-medis/diagnosis/${params.id_rkm_med}`,
+        );
+        setDiagnosis(diagnosisData);
 
-      setDiagnosis(diagnosisData);
+        const { data: informasiDasarData } = await AxiosInstance.get<{
+          informasi_dasar: InformasiDasar;
+          dokumen_rekam_medis: DokumenRekamMedis[];
+        }>(
+          `http://localhost:5000/api/rekam-medis/informasi-dasar/${params.id_rkm_med}`,
+        );
 
-      const { data: informasiDasarData } = await AxiosInstance.get<{
-        informasi_dasar: InformasiDasar;
-        dokumen_rekam_medis: DokumenRekamMedis[];
-      }>(
-        `http://localhost:5000/api/rekam-medis/informasi-dasar/${params.id_rkm_med}`,
-      );
-
-      setInformasiDasar(informasiDasarData.informasi_dasar);
-      setDokumenRekamMedis(informasiDasarData.dokumen_rekam_medis);
+        setInformasiDasar(informasiDasarData.informasi_dasar);
+        setDokumenRekamMedis(informasiDasarData.dokumen_rekam_medis);
+        setIsLoading(false);
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          if (error.status === 401 || error.status === 403) {
+            router.push(`/unauthorized`);
+          }
+        }
+      }
     };
 
     fetchData();
@@ -134,12 +147,14 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
     window.URL.revokeObjectURL(url);
   };
 
+  if (isLoading) {
+    return <></>;
+  }
+
   return (
     <main>
       <div className="border-b border-black bg-white p-4 pl-8 shadow-md">
-        <p className=" text-xs text-gray-500">
-          {current_date.toDateString()}
-        </p>
+        <p className="text-xs text-gray-500">{current_date.toDateString()}</p>
         <h1 className="mt-2 text-3xl font-bold text-gray-800">
           Diagnosa Pasien
         </h1>
@@ -148,31 +163,25 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
       <div>
         {informasiDasar && dokumenRekamMedis ? (
           <>
-          <div className="flex flex-col p-4">
-              <div className="mx-4 my-4 font-bold bg-white h-min p-2 border border-black rounded-t-lg flex justify-center">
-               Informasi Dasar Pasien
-                </div>
-               <div className="bg-white w-vw border border-gray-400 mx-4 rounded-b-lg">
-
-                  {Object.entries(informasiDasar).map(([k, v]) => {
-                    return (
-                      <div >
-                        <div 
-                        className="indent-4 py-2 "
-                        key={k}>
-                          <div className="flex items-center pl-4">
-                            <p className="rounded-full bg-black w-1.5 h-1"></p>
-                            <p >{k} : <b>{v}</b></p>
-
-                          </div>
-                        </div>
-
-                      </div>
-                    );
-                  })}
+            <div className="flex flex-col p-4">
+              <div className="mx-4 my-4 flex h-min justify-center rounded-t-lg border border-black bg-white p-2 font-bold">
+                Informasi Dasar Pasien
               </div>
-
-          </div>
+              <div className="w-vw mx-4 rounded-b-lg border border-gray-400 bg-white">
+                {Object.entries(informasiDasar).map(([k, v]) => {
+                  return (
+                    <div className="py-2 indent-4" key={k}>
+                      <div className="flex items-center pl-4 capitalize">
+                        <p className="h-1 w-1.5 rounded-full bg-black"></p>
+                        <p>
+                          {k.split("_").join(" ")} : <b>{v}</b>
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
             <ul>
               {dokumenRekamMedis.map((dkm) => {
@@ -192,7 +201,9 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
         {diagnosis ? (
           <>
             <div>
-              <p className="p-4 flex justify-center font-bold text-lg bg-white border-t border-b border-black ">Diagnosis</p>
+              <p className="flex justify-center border-b border-t border-black bg-white p-4 text-lg font-bold">
+                Diagnosis
+              </p>
               <div className="mx-4 my-4 grid grid-cols-2 gap-4">
                 {DiagnosisFields.map((diagnosisField) => {
                   return (
@@ -220,7 +231,6 @@ function DiagnosisPage({ params }: DiagnosisPageProps) {
             </div>
           </>
         ) : null}
-
       </div>
       {/* {JSON.stringify(diagnosis)}; */}
       <div className="mx-4 flex justify-end">
